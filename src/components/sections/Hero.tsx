@@ -23,10 +23,12 @@ export function Hero() {
       <div aria-hidden="true" className="textura-linho absolute inset-0 -z-10" />
       <div
         aria-hidden="true"
+        data-parallax="80"
         className="absolute -top-52 -right-40 -z-10 h-[42rem] w-[42rem] rounded-full bg-[radial-gradient(circle,var(--color-areia)_0%,transparent_62%)] opacity-70"
       />
       <div
         aria-hidden="true"
+        data-parallax="-60"
         className="absolute -bottom-40 -left-52 -z-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgb(42_97_131/0.1)_0%,transparent_65%)]"
       />
 
@@ -34,7 +36,7 @@ export function Hero() {
         {/* ---------- bastidor + espaço de foto ---------- */}
         <div className="order-1 lg:order-2 lg:col-span-6">
           <div className="relative mx-auto aspect-[1/1.04] w-full max-w-[24rem] sm:max-w-[27rem] lg:mr-0 lg:ml-auto lg:max-w-[33rem]">
-            <div className="absolute top-0 right-0 h-[70%] w-[60%]">
+            <div data-parallax="34" className="absolute top-0 right-0 h-[70%] w-[60%]">
               <PhotoFrame
                 src="/images/hero-placeholder.svg"
                 alt="Espaço reservado para uma foto dos bordados da Litoral Bordados"
@@ -47,7 +49,7 @@ export function Hero() {
               />
             </div>
 
-            <div className="absolute bottom-0 left-0 w-[78%]">
+            <div data-parallax="-18" className="absolute bottom-0 left-0 w-[78%]">
               <EmbroideryHoop
                 replayLabel={content.hero.replayLabel}
                 label="Animação: uma linha de bordado atravessa o tecido, costura a orla e forma a onda do símbolo da Litoral Bordados."
@@ -62,7 +64,7 @@ export function Hero() {
         </div>
 
         {/* ---------- texto ---------- */}
-        <div className="order-2 lg:order-1 lg:col-span-6 lg:pr-6">
+        <div data-parallax="22" className="order-2 lg:order-1 lg:col-span-6 lg:pr-6">
           <p
             data-reveal
             style={{ "--reveal-delay": "500ms" } as React.CSSProperties}

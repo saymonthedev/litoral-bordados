@@ -42,8 +42,9 @@ A assinatura visual do site é a animação **“Do fio ao bordado”**: no bast
 | React 19 + TypeScript | Componentes e segurança de tipos |
 | [Tailwind CSS 4](https://tailwindcss.com) | Estilos, tema e responsividade |
 | [lucide-react](https://lucide.dev) | Ícones de interface (menu, setas, contato) |
+| [Lenis](https://lenis.darkroom.engineering) | Inércia da rolagem (o "arraste" da página) |
 
-Nenhuma biblioteca de animação foi usada: a animação do bordado é feita com SVG, CSS e um pequeno laço de `requestAnimationFrame` — mais leve e mais rápido.
+A animação do bordado e o parallax são feitos à mão, com SVG, CSS e um pequeno laço de `requestAnimationFrame`. A única biblioteca de movimento é o Lenis (~3 KB), responsável só pela inércia da rolagem.
 
 **Requisito:** Node.js **20.9 ou superior** (`node -v` para conferir).
 
@@ -129,7 +130,8 @@ src/
     layout/              Header e Footer
     sections/            Hero, Services, Portfolio, About, Differentials,
                          Process, Testimonials, FinalCTA
-    system/              observador que revela os elementos ao rolar a página
+    system/              revela os elementos ao rolar e controla a rolagem
+                         com inércia + o parallax
     ui/                  botões, molduras de foto, ícones e detalhes de costura
   config/
     siteConfig.ts        ⭐ contatos, redes sociais e dados da empresa
@@ -143,6 +145,8 @@ src/
   lib/
     brand/               geometria da marca, logotipo em curvas e paleta
     contact.ts           monta os links de WhatsApp, e-mail, telefone e Instagram
+    parallax.ts          motor do arraste entre as seções
+    smooth-scroll.ts     acesso à rolagem (usado para travar no menu)
     site-url.ts          endereço do site usado no SEO
 ```
 
@@ -372,6 +376,49 @@ Em `MARK_SETTINGS`, no mesmo arquivo, é possível ajustar a largura da onda, a 
 Aparece sozinho ao fim da animação e refaz o bordado. O texto do botão está em `content.hero.replayLabel`.
 
 ---
+
+## Como ajustar o arraste (rolagem e parallax)
+
+A página tem duas camadas de movimento ligadas à rolagem:
+
+**1. Inércia da rolagem** — ao parar de rolar, a página ainda desliza um pouco e assenta. Fica em `src/components/system/SmoothScroll.tsx`:
+
+```ts
+/** Suavização da rolagem: 0.06 = bem arrastado · 0.15 = quase imediato. */
+const INERCIA = 0.085;
+```
+
+Diminua para um arraste mais longo e pesado; aumente para uma resposta mais direta. Para desligar por completo, basta remover `<SmoothScroll />` de `src/app/layout.tsx`.
+
+**2. Parallax das camadas** — dentro de cada seção, os elementos se movem em velocidades diferentes. Isso é controlado direto no HTML, por atributos:
+
+```tsx
+<div data-parallax="40">…</div>       {/* fica para trás 40px */}
+<div data-parallax="-25">…</div>      {/* adianta 25px */}
+<div data-parallax-x="-70">…</div>    {/* arrasta na horizontal */}
+```
+
+O número é a distância máxima, em pixels. Valores entre 20 e 90 costumam ficar bons — acima disso o efeito começa a chamar mais atenção que o conteúdo. O motor está em `src/lib/parallax.ts`.
+
+Onde o arraste está aplicado hoje:
+
+| Elemento | Força |
+| --- | --- |
+| Brilhos do fundo do Hero | `80` e `-60` |
+| Espaço de foto do Hero | `34` |
+| Bastidor do Hero | `-18` |
+| Texto do Hero | `22` |
+| Fotos dentro das molduras | `26` (prop `arraste` do `PhotoFrame`) |
+| Fio condutor entre seções | `-70` na horizontal |
+| Círculos decorativos do Sobre | `55` e `-45` |
+| Fio das etapas do processo | `-45` na horizontal |
+| Marca d'água do contato | `70` |
+
+> **Regra importante:** nunca coloque `data-parallax` no mesmo elemento que tem `data-reveal` — os dois mexem em `transform` e um anula o outro. Use um elemento em volta.
+
+Nas telas pequenas a força cai automaticamente (50% no celular, 75% no tablet), e o toque continua sendo o nativo do navegador — arrastar com o dedo responde na hora.
+
+Com `prefers-reduced-motion`, tanto a inércia quanto o parallax ficam desligados: rolagem normal e cada elemento exatamente onde o layout o colocou.
 
 ## Depoimentos
 

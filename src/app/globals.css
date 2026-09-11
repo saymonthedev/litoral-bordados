@@ -36,6 +36,8 @@
 
   /* Curva de animação padrão da marca */
   --ease-linha: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Curva do "arraste": entra rápido e assenta devagar, como linha sendo puxada */
+  --ease-arrasto: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==================================================================
@@ -60,6 +62,8 @@
     background-color: var(--color-linho);
     color: var(--color-tinta);
     font-family: var(--font-sans);
+    /* as camadas do parallax se deslocam na horizontal: nada de barra extra */
+    overflow-x: clip;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -98,6 +102,34 @@
 }
 
 /* ==================================================================
+   ROLAGEM COM INÉRCIA (Lenis) E PARALLAX
+   O JavaScript fica em src/components/system/SmoothScroll.tsx.
+   ================================================================== */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Camadas que se deslocam com a rolagem */
+[data-parallax],
+[data-parallax-x] {
+  will-change: transform;
+}
+
+/* ==================================================================
    TEXTURAS DE TECIDO
    Trama de linho feita só com CSS — sem imagem, sem custo de download.
    ================================================================== */
@@ -133,7 +165,7 @@
 @keyframes ponto-entra {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(28px);
   }
   to {
     opacity: 1;
@@ -180,7 +212,7 @@
   }
 
   .js [data-reveal].is-visible {
-    animation: ponto-entra 0.75s var(--ease-linha) both;
+    animation: ponto-entra 1s var(--ease-arrasto) both;
     animation-delay: var(--reveal-delay, 0ms);
   }
 
@@ -261,5 +293,12 @@
     opacity: 1 !important;
     stroke-dashoffset: 0 !important;
     animation: none !important;
+  }
+
+  /* sem arraste: as camadas ficam exatamente onde o layout as colocou */
+  [data-parallax],
+  [data-parallax-x] {
+    transform: none !important;
+    will-change: auto;
   }
 }

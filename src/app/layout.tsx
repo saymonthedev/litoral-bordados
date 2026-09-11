@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { RevealObserver } from "@/components/system/RevealObserver";
+import { SmoothScroll } from "@/components/system/SmoothScroll";
 import { siteConfig } from "@/config/siteConfig";
 import { instagramHref } from "@/lib/contact";
 import { getSiteUrl } from "@/lib/site-url";
@@ -91,6 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <a
           href="#conteudo"
+          data-no-smooth
           className="sr-only rounded-full focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-mare focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-linho"
         >
           Pular para o conteúdo
@@ -101,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
 
         <RevealObserver />
+        <SmoothScroll />
 
         <script
           type="application/ld+json"
