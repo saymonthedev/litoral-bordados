@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+/* ==================================================================
+   TEMA — Litoral Bordados
+   Cores, fontes e medidas usadas em todo o site.
+   (As mesmas cores existem em src/lib/brand/palette.ts, usada pelos
+   SVGs gerados por código.)
+   ================================================================== */
+
+@theme {
+  /* Azul profundo — a "maré" */
+  --color-mare: #0e2c42;
+  --color-mare-700: #17415e;
+  --color-mare-500: #2a6183;
+  --color-mare-300: #6e93ab;
+
+  /* Tecido */
+  --color-linho: #f5efe4;
+  --color-papel: #fbf8f3;
+  --color-areia: #e8dcc8;
+  --color-areia-forte: #d8c7aa;
+
+  /* Linha de bordado */
+  --color-coral: #c8583a;
+  --color-coral-claro: #e07a55;
+  --color-coral-escuro: #a8452c;
+
+  /* Texto */
+  --color-tinta: #0e2c42;
+  --color-tinta-suave: #4a6072;
+  --color-tinta-clara: #7c8f9d;
+
+  /* Tipografia */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Curva de animação padrão da marca */
+  --ease-linha: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ==================================================================
+   BASE
+   ================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: light;
+    scroll-padding-top: 6rem;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-linho);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-coral) 25%, transparent);
+    color: var(--color-mare);
+  }
+
+  /* Foco visível e consistente em todo o site */
+  :focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Fundo escuro: o foco precisa de um tom mais claro */
+  .sobre-escuro :focus-visible {
+    outline-color: var(--color-coral-claro);
+  }
+}
+
+/* ==================================================================
+   TEXTURAS DE TECIDO
+   Trama de linho feita só com CSS — sem imagem, sem custo de download.
+   ================================================================== */
+
+@utility textura-linho {
+  background-image:
+    repeating-linear-gradient(90deg, rgb(14 44 66 / 0.035) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(0deg, rgb(14 44 66 / 0.028) 0 1px, transparent 1px 4px);
+}
+
+@utility textura-linho-clara {
+  background-image:
+    repeating-linear-gradient(90deg, rgb(245 239 228 / 0.05) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(0deg, rgb(245 239 228 / 0.04) 0 1px, transparent 1px 4px);
+}
+
+/* ==================================================================
+   DETALHES DE COSTURA
+   ================================================================== */
+
+/* Moldura pespontada (usada nos espaços de foto e em botões) */
+@utility moldura-pesponto {
+  outline: 1.5px dashed color-mix(in srgb, currentColor 32%, transparent);
+  outline-offset: -10px;
+}
+
+/* ==================================================================
+   ANIMAÇÕES DE ENTRADA
+   Só acontecem quando o JavaScript está disponível (classe .js) e
+   quando o visitante não pediu para reduzir animações.
+   ================================================================== */
+
+@keyframes ponto-entra {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes linha-corre {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes linha-costura {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+/* Um pesponto sendo costurado da esquerda para a direita */
+@keyframes costura-revela {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes ponto-aparece {
+  from {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  to {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+@layer utilities {
+  .js [data-reveal] {
+    opacity: 0;
+  }
+
+  .js [data-reveal].is-visible {
+    animation: ponto-entra 0.75s var(--ease-linha) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+
+  /* Linha que se desenha ao entrar na tela (divisórias e fios condutores) */
+  .js [data-draw] {
+    stroke-dasharray: var(--draw-length, 1000);
+    stroke-dashoffset: var(--draw-length, 1000);
+  }
+
+  .js [data-draw].is-visible {
+    animation: linha-corre var(--draw-duration, 1.6s) var(--ease-linha) both;
+    animation-delay: var(--draw-delay, 0ms);
+  }
+
+  /* Pesponto que se costura da esquerda para a direita (divisórias, grifos).
+     O recorte fica no conteúdo, e não no elemento observado: um elemento
+     totalmente recortado tem área zero e nunca dispara o IntersectionObserver. */
+  .js [data-stitch-reveal] > * {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  .js [data-stitch-reveal].is-visible > * {
+    animation: costura-revela var(--draw-duration, 1.5s) var(--ease-linha) both;
+    animation-delay: var(--draw-delay, 0ms);
+  }
+
+  /* Pontos que aparecem um depois do outro (amostras de ponto) */
+  .js [data-stagger] > * {
+    opacity: 0;
+  }
+
+  .js [data-stagger].is-visible > * {
+    animation: ponto-aparece 0.5s var(--ease-linha) both;
+    animation-delay: calc(var(--i, 0) * 55ms);
+  }
+}
+
+/* ==================================================================
+   ACESSIBILIDADE — prefers-reduced-motion
+   Quem pede menos movimento recebe o resultado final, sem animação.
+   ================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js [data-reveal],
+  .js [data-reveal].is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .js [data-draw],
+  .js [data-draw].is-visible {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+
+  .js [data-stitch-reveal] > *,
+  .js [data-stitch-reveal].is-visible > * {
+    clip-path: none !important;
+    animation: none !important;
+  }
+
+  .js [data-stagger] > *,
+  .js [data-stagger].is-visible > * {
+    opacity: 1 !important;
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+}

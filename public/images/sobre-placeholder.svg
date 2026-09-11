@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="1000" viewBox="0 0 1100 1000" fill="none" role="img" aria-label="Espaço reservado para foto do ateliê">
+  <title>Espaço reservado para foto do ateliê</title>
+  <defs>
+    <pattern id="trama-1" width="6" height="6" patternUnits="userSpaceOnUse">
+      <path d="M0 0h6M0 3h6" stroke="#0E2C42" stroke-opacity="0.05" stroke-width="1.2"/>
+      <path d="M0 0v6M3 0v6" stroke="#0E2C42" stroke-opacity="0.04" stroke-width="1.2"/>
+    </pattern>
+    <radialGradient id="luz-1" cx="32%" cy="24%" r="88%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#8A6A3F" stop-opacity="0.12"/>
+    </radialGradient>
+  </defs>
+  <rect width="1100" height="1000" fill="#DCD2BD"/>
+  <rect width="1100" height="1000" fill="url(#trama-1)"/>
+  <rect width="1100" height="1000" fill="url(#luz-1)"/>
+  <g stroke="#17415E" stroke-opacity="0.5" fill="none" stroke-linecap="round" stroke-width="7">
+        <path d="M198 350l-56 220" stroke-opacity="0.34"/><path d="M216 358.51l-56 219.07" stroke-opacity="0.36384031969540737"/><path d="M234 366.08l-56 216.33" stroke-opacity="0.3867302010770381"/><path d="M252 371.88l-56 211.95" stroke-opacity="0.40775709680740424"/><path d="M270 375.27l-56 206.21" stroke-opacity="0.42608273090794274"/><path d="M288 375.88l-56 199.46" stroke-opacity="0.4409765181769476"/><path d="M306 373.64l-56 192.12" stroke-opacity="0.45184469031606717"/><path d="M324 368.8l-56 184.65" stroke-opacity="0.45825396759861525"/><path d="M342 361.89l-56 177.52" stroke-opacity="0.45994883236498063"/><path d="M360 353.67l-56 171.15" stroke-opacity="0.4568617157053834"/><path d="M378 345.05l-56 165.97" stroke-opacity="0.4491156912190818"/><path d="M396 336.97l-56 162.27" stroke-opacity="0.4370195684583508"/><path d="M414 330.32l-56 160.3" stroke-opacity="0.42105558166613816"/><path d="M432 325.85l-56 160.18" stroke-opacity="0.4018601646185757"/><path d="M450 324.03l-56 161.91" stroke-opacity="0.3801985780187086"/><path d="M468 325.07l-56 165.38" stroke-opacity="0.3569344009671841"/><path d="M486 328.85l-56 170.39" stroke-opacity="0.3329951027886904"/><path d="M504 334.97l-56 176.62" stroke-opacity="0.30933506775678027"/><path d="M522 342.74l-56 183.68" stroke-opacity="0.28689754680461776"/><path d="M540 351.3l-56 191.13" stroke-opacity="0.26657705308687374"/><path d="M558 359.73l-56 198.51" stroke-opacity="0.24918370056304864"/><path d="M576 367.08l-56 205.36" stroke-opacity="0.23541090731036945"/><path d="M594 372.55l-56 211.26" stroke-opacity="0.2258077511332581"/><path d="M612 375.55l-56 215.84" stroke-opacity="0.2207570795639843"/><path d="M630 375.72l-56 218.81" stroke-opacity="0.22046024693969915"/><path d="M648 373.07l-56 219.98" stroke-opacity="0.22492908704042341"/>
+      </g>
+      <g stroke="#B04A2E" fill="none" stroke-linecap="round" stroke-width="6" stroke-dasharray="20 13"><path d="M132 780h836"/></g>
+  <rect x="26" y="26" width="1048" height="948" rx="6" stroke="#17415E" stroke-opacity="0.35" stroke-width="2.5" stroke-dasharray="14 10" fill="none"/>
+</svg>

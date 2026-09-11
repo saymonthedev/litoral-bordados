@@ -1,0 +1,97 @@
+/* ==================================================================
+   Animação "Do fio ao bordado"
+   Estilos do bastidor do Hero (src/components/hero/EmbroideryHoop.tsx).
+
+   Regra geral: o estado inicial (tudo escondido) só vale quando há
+   JavaScript. Sem JS — ou com prefers-reduced-motion — o visitante vê
+   direto o bordado pronto.
+   ================================================================== */
+
+.bastidor [data-ponto],
+.bastidor [data-fio],
+.bastidor .agulha {
+  opacity: 0;
+}
+
+.bastidor .letra {
+  fill-opacity: 0;
+  stroke-dashoffset: 1;
+}
+
+/* Sem JavaScript: bordado pronto */
+html:not(.js) .bastidor [data-ponto] {
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+
+html:not(.js) .bastidor .letra {
+  fill-opacity: 1;
+  stroke-opacity: 0;
+  stroke-dashoffset: 0;
+}
+
+/* O nome é bordado letra a letra no fim da animação */
+.bastidor[data-nome="1"] .letra {
+  animation: bordar-letra 1.05s var(--ease-linha) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes bordar-letra {
+  0% {
+    fill-opacity: 0;
+    stroke-opacity: 0.85;
+    stroke-dashoffset: 1;
+  }
+  55% {
+    fill-opacity: 0;
+    stroke-opacity: 0.85;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    fill-opacity: 1;
+    stroke-opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* O brilho suave que passa pelo bordado quando ele fica pronto */
+.bastidor .brilho {
+  opacity: 0;
+}
+
+.bastidor[data-nome="1"] .brilho {
+  animation: brilho-linha 1.6s var(--ease-linha) 0.35s both;
+}
+
+@keyframes brilho-linha {
+  0% {
+    opacity: 0;
+    transform: translateX(-38%);
+  }
+  35% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(38%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bastidor [data-ponto] {
+    opacity: 1 !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .bastidor .letra {
+    fill-opacity: 1 !important;
+    stroke-opacity: 0 !important;
+    animation: none !important;
+  }
+
+  .bastidor .agulha,
+  .bastidor [data-fio],
+  .bastidor .brilho {
+    display: none !important;
+  }
+}

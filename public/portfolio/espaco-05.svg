@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" fill="none" role="img" aria-label="Espaço reservado para foto de peça personalizada">
+  <title>Espaço reservado para foto de peça personalizada</title>
+  <defs>
+    <pattern id="trama-4" width="6" height="6" patternUnits="userSpaceOnUse">
+      <path d="M0 0h6M0 3h6" stroke="#0E2C42" stroke-opacity="0.05" stroke-width="1.2"/>
+      <path d="M0 0v6M3 0v6" stroke="#0E2C42" stroke-opacity="0.04" stroke-width="1.2"/>
+    </pattern>
+    <radialGradient id="luz-4" cx="32%" cy="24%" r="88%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#8A6A3F" stop-opacity="0.12"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1200" fill="#F3EDE1"/>
+  <rect width="900" height="1200" fill="url(#trama-4)"/>
+  <rect width="900" height="1200" fill="url(#luz-4)"/>
+  <g stroke="#2A6183" stroke-opacity="0.5" fill="none" stroke-linecap="round" stroke-width="4">
+        <path d="M108 192v744" stroke-dasharray="14 10" stroke-opacity="0.45"/><path d="M176.4 192v744" stroke-dasharray="20 10" stroke-opacity="0.4"/><path d="M244.8 192v744" stroke-dasharray="26 10" stroke-opacity="0.35"/><path d="M313.2 192v744" stroke-dasharray="32 10" stroke-opacity="0.3"/><path d="M381.6 192v744" stroke-dasharray="14 10" stroke-opacity="0.25"/><path d="M450 192v744" stroke-dasharray="20 10" stroke-opacity="0.45"/><path d="M518.4 192v744" stroke-dasharray="26 10" stroke-opacity="0.4"/><path d="M586.8 192v744" stroke-dasharray="32 10" stroke-opacity="0.35"/><path d="M655.2 192v744" stroke-dasharray="14 10" stroke-opacity="0.3"/><path d="M723.6 192v744" stroke-dasharray="20 10" stroke-opacity="0.25"/><path d="M792 192v744" stroke-dasharray="26 10" stroke-opacity="0.45"/>
+      </g>
+      <g fill="#C8583A" fill-opacity="0.85">
+        <circle cx="162" cy="1008" r="7"/><circle cx="279" cy="1008" r="7"/><circle cx="396" cy="1008" r="7"/><circle cx="513" cy="1008" r="7"/><circle cx="630" cy="1008" r="7"/><circle cx="747" cy="1008" r="7"/>
+      </g>
+  <rect x="26" y="26" width="848" height="1148" rx="6" stroke="#2A6183" stroke-opacity="0.35" stroke-width="2.5" stroke-dasharray="14 10" fill="none"/>
+</svg>

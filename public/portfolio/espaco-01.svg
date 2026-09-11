@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" fill="none" role="img" aria-label="Espaço reservado para foto de uniforme bordado">
+  <title>Espaço reservado para foto de uniforme bordado</title>
+  <defs>
+    <pattern id="trama-0" width="6" height="6" patternUnits="userSpaceOnUse">
+      <path d="M0 0h6M0 3h6" stroke="#0E2C42" stroke-opacity="0.05" stroke-width="1.2"/>
+      <path d="M0 0v6M3 0v6" stroke="#0E2C42" stroke-opacity="0.04" stroke-width="1.2"/>
+    </pattern>
+    <radialGradient id="luz-0" cx="32%" cy="24%" r="88%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#8A6A3F" stop-opacity="0.12"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1200" fill="#EDE3D1"/>
+  <rect width="900" height="1200" fill="url(#trama-0)"/>
+  <rect width="900" height="1200" fill="url(#luz-0)"/>
+  <g stroke="#0E2C42" stroke-opacity="0.5" fill="none" stroke-linecap="round" stroke-width="3">
+        <circle cx="450" cy="600" r="70" stroke-dasharray="16 11" stroke-opacity="0.42"/><circle cx="450" cy="600" r="122" stroke-dasharray="18 12" stroke-opacity="0.36"/><circle cx="450" cy="600" r="174" stroke-dasharray="20 13" stroke-opacity="0.3"/><circle cx="450" cy="600" r="226" stroke-dasharray="22 14" stroke-opacity="0.24"/><circle cx="450" cy="600" r="278" stroke-dasharray="24 15" stroke-opacity="0.18"/>
+      </g>
+      <g stroke="#C8583A" fill="none" stroke-linecap="round" stroke-width="6" stroke-dasharray="22 14"><circle cx="450" cy="600" r="34"/></g>
+  <rect x="26" y="26" width="848" height="1148" rx="6" stroke="#0E2C42" stroke-opacity="0.35" stroke-width="2.5" stroke-dasharray="14 10" fill="none"/>
+</svg>

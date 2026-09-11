@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1250" viewBox="0 0 1000 1250" fill="none" role="img" aria-label="Espaço reservado para foto dos trabalhos">
+  <title>Espaço reservado para foto dos trabalhos</title>
+  <defs>
+    <pattern id="trama-3" width="6" height="6" patternUnits="userSpaceOnUse">
+      <path d="M0 0h6M0 3h6" stroke="#0E2C42" stroke-opacity="0.05" stroke-width="1.2"/>
+      <path d="M0 0v6M3 0v6" stroke="#0E2C42" stroke-opacity="0.04" stroke-width="1.2"/>
+    </pattern>
+    <radialGradient id="luz-3" cx="32%" cy="24%" r="88%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#8A6A3F" stop-opacity="0.12"/>
+    </radialGradient>
+  </defs>
+  <rect width="1000" height="1250" fill="#E5D5B8"/>
+  <rect width="1000" height="1250" fill="url(#trama-3)"/>
+  <rect width="1000" height="1250" fill="url(#luz-3)"/>
+  <g stroke="#0E2C42" stroke-opacity="0.5" fill="none" stroke-linecap="round" stroke-width="5">
+        <path d="M100 250q200 -40 400 0t400 0" stroke-dasharray="19 12" stroke-opacity="0.45"/><path d="M100 343.75q200 -42 400 0t400 0" stroke-dasharray="20 12" stroke-opacity="0.42"/><path d="M100 437.5q200 -44 400 0t400 0" stroke-dasharray="21 12" stroke-opacity="0.38"/><path d="M100 531.25q200 -46 400 0t400 0" stroke-dasharray="22 12" stroke-opacity="0.34"/><path d="M100 625q200 -48 400 0t400 0" stroke-dasharray="23 12" stroke-opacity="0.31"/><path d="M100 718.75q200 -50 400 0t400 0" stroke-dasharray="24 12" stroke-opacity="0.28"/><path d="M100 812.5q200 -52 400 0t400 0" stroke-dasharray="25 12" stroke-opacity="0.24"/><path d="M100 906.25q200 -54 400 0t400 0" stroke-dasharray="26 12" stroke-opacity="0.2"/><path d="M100 1000q200 -56 400 0t400 0" stroke-dasharray="27 12" stroke-opacity="0.17"/>
+      </g>
+      <g stroke="#A8452C" fill="none" stroke-linecap="round" stroke-width="6" stroke-dasharray="24 15"><path d="M100 1075q200 -38 400 0t400 0"/></g>
+  <rect x="26" y="26" width="948" height="1198" rx="6" stroke="#0E2C42" stroke-opacity="0.35" stroke-width="2.5" stroke-dasharray="14 10" fill="none"/>
+</svg>
