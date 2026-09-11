@@ -26,6 +26,7 @@ export const content = {
     /** Legenda discreta do espaço reservado para a futura foto do Hero. */
     photoCaption: "Espaço reservado para foto dos trabalhos",
     replayLabel: "Bordar novamente",
+    pauseLabel: "Pausar bordado",
     scrollLabel: "Role para ver mais",
   },
 

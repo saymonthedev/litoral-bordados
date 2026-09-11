@@ -52,6 +52,7 @@ export function Hero() {
             <div data-parallax="-18" className="absolute bottom-0 left-0 w-[78%]">
               <EmbroideryHoop
                 replayLabel={content.hero.replayLabel}
+                pauseLabel={content.hero.pauseLabel}
                 label="Animação: uma linha de bordado atravessa o tecido, costura a orla e forma a onda do símbolo da Litoral Bordados."
               />
             </div>

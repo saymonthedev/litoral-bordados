@@ -365,15 +365,29 @@ const TEMPOS = {
 
 Diminua os números para acelerar; aumente para deixar mais lento.
 
+A animação roda **em laço**, sozinha. O intervalo entre uma volta e outra fica logo abaixo, no mesmo arquivo:
+
+```ts
+const ESPERA = 5000;   // o bordado pronto descansa 5s antes de recomeçar
+const SUMICO = 700;    // some suavemente em 0,7s antes da próxima volta
+```
+
+O laço só roda enquanto o bastidor está visível na tela — fora dela, a animação pausa sozinha e não gasta processamento.
+
 ### Mudar o desenho bordado
 
 O desenho vem de `src/lib/brand/mark.ts` (`WAVE_CURVE` é a onda e `SHORE_CURVE` é a orla). Alterando essas curvas, mudam ao mesmo tempo a logo, o favicon e a animação — tudo continua coerente. Depois de alterar, rode `npm run brand`.
 
 Em `MARK_SETTINGS`, no mesmo arquivo, é possível ajustar a largura da onda, a distância entre os pontos e a inclinação do ponto cheio.
 
-### Botão “Bordar novamente”
+### Botão de pausa
 
-Aparece sozinho ao fim da animação e refaz o bordado. O texto do botão está em `content.hero.replayLabel`.
+Como o bordado se repete sozinho, existe um botão abaixo do bastidor para parar o movimento — exigência de acessibilidade para conteúdo que fica em laço (WCAG 2.2.2, *Pause, Stop, Hide*).
+
+- Rodando, ele mostra **”Pausar bordado”** (`content.hero.pauseLabel`);
+- Pausado, o bastidor descansa com o bordado pronto e o botão vira **”Bordar novamente”** (`content.hero.replayLabel`), que recomeça do fio.
+
+Com `prefers-reduced-motion` não há laço nem botão: o bordado já aparece pronto.
 
 ---
 
