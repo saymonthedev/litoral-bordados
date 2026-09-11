@@ -20,11 +20,14 @@ export function StitchDivider({ tone = "claro", className, knot = true }: Stitch
   const cor = tone === "escuro" ? "text-linho/35" : "text-mare/30";
   return (
     <div aria-hidden="true" className={cn("relative w-full overflow-hidden", className)}>
+      {/* o SVG é mais largo que o espaço visível: assim o fio pode ser
+          arrastado na horizontal sem nunca abrir uma brecha nas laterais */}
       <svg
         viewBox="0 0 1200 56"
         preserveAspectRatio="xMidYMid slice"
         data-stitch-reveal
-        className={cn("h-14 w-full", cor)}
+        data-parallax-x="-70"
+        className={cn("-mx-24 h-14 w-[calc(100%+12rem)]", cor)}
         fill="none"
       >
         {/* o conteúdo vai dentro de um <g>: é ele que é recortado enquanto

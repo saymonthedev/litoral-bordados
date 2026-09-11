@@ -21,6 +21,8 @@ type PhotoFrameProps = {
   caption?: string;
   className?: string;
   rounded?: string;
+  /** Força do arraste da foto dentro da moldura (px). 0 desliga. */
+  arraste?: number;
   children?: React.ReactNode;
 };
 
@@ -34,6 +36,7 @@ export function PhotoFrame({
   caption,
   className,
   rounded = "rounded-[26px]",
+  arraste = 26,
   children,
 }: PhotoFrameProps) {
   return (
@@ -46,14 +49,22 @@ export function PhotoFrame({
           rounded,
         )}
       >
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes={sizes}
-          priority={priority}
-          className="object-cover transition-transform duration-[1200ms] ease-(--ease-linha) group-hover/foto:scale-[1.02]"
-        />
+        {/* A foto é um pouco maior que a moldura e desliza dentro dela
+            conforme a página rola — o arraste que dá profundidade. */}
+        <div
+          data-parallax={arraste || undefined}
+          data-parallax-scale={arraste ? "1.12" : undefined}
+          className={cn("absolute inset-0", arraste ? "scale-[1.12]" : undefined)}
+        >
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes={sizes}
+            priority={priority}
+            className="object-cover transition-transform duration-[1200ms] ease-(--ease-linha) group-hover/foto:scale-[1.02]"
+          />
+        </div>
 
         {/* acabamento pespontado por dentro da moldura */}
         <span

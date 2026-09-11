@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { ctaLabels, navItems, siteConfig } from "@/config/siteConfig";
 import { instagramHref, quoteAction, whatsappHref } from "@/lib/contact";
+import { travarRolagem } from "@/lib/smooth-scroll";
 import { Button } from "@/components/ui/Button";
 import { InstagramIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
@@ -38,10 +39,12 @@ export function Header() {
     document.addEventListener("keydown", aoTeclar);
     const anterior = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    travarRolagem(true); // pausa também a rolagem com inércia
     fecharRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", aoTeclar);
       document.body.style.overflow = anterior;
+      travarRolagem(false);
       botaoRef.current?.focus();
     };
   }, [aberto]);

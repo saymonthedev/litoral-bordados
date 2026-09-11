@@ -17,10 +17,12 @@ export function About() {
           {/* aro de bastidor desenhado atrás da foto */}
           <span
             aria-hidden="true"
+            data-parallax="55"
             className="absolute -top-8 -left-8 hidden h-40 w-40 rounded-full border border-dashed border-mare/25 sm:block"
           />
           <span
             aria-hidden="true"
+            data-parallax="-45"
             className="absolute -right-6 -bottom-10 hidden h-28 w-28 rounded-full border border-dashed border-coral/40 sm:block"
           />
 
@@ -36,7 +38,7 @@ export function About() {
         </div>
 
         {/* texto */}
-        <div className="lg:col-span-7 lg:pl-4">
+        <div data-parallax="-20" className="lg:col-span-7 lg:pl-4">
           <SectionHeading
             id="titulo-sobre"
             eyebrow={content.about.eyebrow}

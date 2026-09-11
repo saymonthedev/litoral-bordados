@@ -56,6 +56,7 @@ export function FinalCTA() {
         aria-hidden="true"
         width={124}
         height={96}
+        data-parallax="70"
         className="pointer-events-none absolute -right-10 -bottom-6 -z-10 w-[18rem] opacity-[0.05] md:-right-4 md:w-[24rem]"
       />
 

@@ -26,7 +26,8 @@ export function Process() {
             viewBox="0 0 1200 40"
             preserveAspectRatio="none"
             data-stitch-reveal
-            className="absolute top-7 left-0 hidden h-10 w-full text-mare/35 lg:block"
+            data-parallax-x="-45"
+            className="absolute top-7 -left-12 hidden h-10 w-[calc(100%+6rem)] text-mare/35 lg:block"
             fill="none"
           >
             <g>
