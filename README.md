@@ -1,0 +1,503 @@
+# Litoral Bordados — site institucional
+
+Landing page da **Litoral Bordados**, construída em Next.js e preparada para publicação na Vercel.
+
+A assinatura visual do site é a animação **“Do fio ao bordado”**: no bastidor do topo da página, uma agulha entra puxando a linha, costura o pesponto da orla, troca de linha, preenche a onda em ponto cheio e, no fim, borda o nome da marca — exatamente o mesmo desenho da logo.
+
+> **Importante:** nenhuma informação da empresa foi inventada. Telefone, WhatsApp, Instagram, e-mail, endereço, fotos, depoimentos, história, números e datas estão vazios ou marcados como espaço reservado, prontos para receber o material oficial. Este README explica onde colocar cada coisa.
+
+---
+
+## Índice
+
+1. [Tecnologias](#tecnologias)
+2. [Instalação](#instalação)
+3. [Desenvolvimento](#desenvolvimento)
+4. [Build de produção](#build-de-produção)
+5. [Estrutura do projeto](#estrutura-do-projeto)
+6. [Como alterar as informações da empresa](#como-alterar-as-informações-da-empresa)
+7. [Como alterar os textos das seções](#como-alterar-os-textos-das-seções)
+8. [Como editar serviços, diferenciais e etapas](#como-editar-serviços-diferenciais-e-etapas)
+9. [Como adicionar as fotos reais](#como-adicionar-as-fotos-reais)
+10. [Como trocar a logo](#como-trocar-a-logo)
+11. [Como alterar a animação do bordado](#como-alterar-a-animação-do-bordado)
+12. [Depoimentos](#depoimentos)
+13. [Acessibilidade e movimento reduzido](#acessibilidade-e-movimento-reduzido)
+14. [SEO](#seo)
+15. [Deploy na Vercel](#deploy-na-vercel)
+16. [Como atualizar o site depois de publicado](#como-atualizar-o-site-depois-de-publicado)
+17. [Variáveis de ambiente](#variáveis-de-ambiente)
+18. [Checklist de entrega do material da empresa](#checklist-de-entrega-do-material-da-empresa)
+
+---
+
+## Tecnologias
+
+| Ferramenta | Para quê |
+| --- | --- |
+| [Next.js 16](https://nextjs.org) (App Router) | Estrutura do site, SEO e otimização de imagens |
+| React 19 + TypeScript | Componentes e segurança de tipos |
+| [Tailwind CSS 4](https://tailwindcss.com) | Estilos, tema e responsividade |
+| [lucide-react](https://lucide.dev) | Ícones de interface (menu, setas, contato) |
+
+Nenhuma biblioteca de animação foi usada: a animação do bordado é feita com SVG, CSS e um pequeno laço de `requestAnimationFrame` — mais leve e mais rápido.
+
+**Requisito:** Node.js **20.9 ou superior** (`node -v` para conferir).
+
+---
+
+## Instalação
+
+Baixe o projeto e, dentro da pasta dele, instale as dependências:
+
+```bash
+npm install
+```
+
+Isso só precisa ser feito uma vez (e novamente quando alguma dependência mudar).
+
+---
+
+## Desenvolvimento
+
+```bash
+npm run dev
+```
+
+Depois abra <http://localhost:3000> no navegador.
+
+O servidor recarrega a página sozinho a cada arquivo salvo. Para parar, pressione `Ctrl + C` no terminal.
+
+---
+
+## Build de produção
+
+Para conferir se está tudo certo antes de publicar:
+
+```bash
+npm run build
+```
+
+O comando compila o site e verifica os tipos do TypeScript. Se aparecer algum erro, ele indica o arquivo e a linha.
+
+Para rodar localmente a versão compilada (igual à da internet):
+
+```bash
+npm start
+```
+
+E o site fica em <http://localhost:3000>.
+
+### Todos os comandos disponíveis
+
+| Comando | O que faz |
+| --- | --- |
+| `npm run dev` | Servidor de desenvolvimento |
+| `npm run build` | Compila para produção |
+| `npm start` | Roda a versão compilada |
+| `npm run typecheck` | Só a checagem de tipos |
+| `npm run brand` | Regera os SVGs da marca e os espaços reservados de imagem |
+
+---
+
+## Estrutura do projeto
+
+```text
+public/
+  brand/                 arquivos da identidade visual (logo, símbolo, favicon)
+  images/                espaços reservados do Hero e da seção Sobre
+  portfolio/             6 espaços reservados para as fotos dos trabalhos
+
+scripts/
+  generate-brand.ts      gera os SVGs da marca e os espaços reservados
+
+src/
+  app/
+    layout.tsx           cabeçalho, rodapé, fontes, SEO e dados estruturados
+    page.tsx             a ordem das seções da página
+    globals.css          tema (cores, fontes), texturas e animações de entrada
+    icon.svg             favicon (o Next.js reconhece automaticamente)
+    apple-icon.png       ícone para iPhone/iPad
+    opengraph-image.png  imagem exibida quando o link é compartilhado
+    robots.ts            robots.txt
+    sitemap.ts           sitemap.xml
+  components/
+    hero/                a animação "Do fio ao bordado"
+    layout/              Header e Footer
+    sections/            Hero, Services, Portfolio, About, Differentials,
+                         Process, Testimonials, FinalCTA
+    system/              observador que revela os elementos ao rolar a página
+    ui/                  botões, molduras de foto, ícones e detalhes de costura
+  config/
+    siteConfig.ts        ⭐ contatos, redes sociais e dados da empresa
+    content.ts           ⭐ todos os textos das seções
+  data/
+    services.ts          lista de serviços
+    portfolio.ts         lista dos trabalhos (e das fotos)
+    differentials.ts     lista de diferenciais
+    process.ts           etapas do atendimento
+    testimonials.ts      depoimentos (vazio de propósito)
+  lib/
+    brand/               geometria da marca, logotipo em curvas e paleta
+    contact.ts           monta os links de WhatsApp, e-mail, telefone e Instagram
+    site-url.ts          endereço do site usado no SEO
+```
+
+Os dois arquivos marcados com ⭐ resolvem quase tudo o que o cliente costuma pedir.
+
+---
+
+## Como alterar as informações da empresa
+
+Abra **`src/config/siteConfig.ts`**. É o único arquivo necessário para nome, contatos e redes sociais:
+
+```ts
+export const siteConfig = {
+  name: "Litoral Bordados",
+  shortName: "Litoral",
+  tagline: "A precisão do bordado com a fluidez do litoral.",
+  description: "Bordados personalizados para uniformes, camisetas...",
+
+  whatsapp: "",          // só números, com DDI e DDD
+  whatsappMessage: "Olá! Conheci a Litoral Bordados pelo site...",
+  phone: "",             // ex.: "(00) 0000-0000"
+  email: "",             // ex.: "contato@litoralbordados.com.br"
+  instagram: "",         // "@perfil", "perfil" ou a URL completa
+  address: "",           // ex.: "Rua Exemplo, 000 — Bairro, Cidade/UF"
+  openingHours: "",      // ex.: "Segunda a sexta, 8h às 18h"
+
+  url: "",               // domínio próprio, quando houver
+};
+```
+
+### Regra dos campos vazios
+
+Todo campo vazio (`""`) some do site — **nunca** gera link quebrado:
+
+- **WhatsApp vazio:** o botão “Solicitar orçamento” leva para a seção de contato. Se houver e-mail ou telefone cadastrado, ele usa esse canal.
+- **Sem nenhum canal:** no lugar dos contatos aparece o aviso “Os canais de atendimento da Litoral Bordados serão divulgados em breve”.
+- **Instagram/endereço vazios:** o item simplesmente não é exibido no rodapé nem no contato.
+
+### WhatsApp — formato do número
+
+Escreva **apenas números**, com o código do país (55) e o DDD, sem espaços, parênteses ou traços:
+
+```ts
+whatsapp: "5511987654321",   // 55 + DDD (11) + número
+```
+
+Com o número preenchido, todos os botões de orçamento passam a abrir a conversa no WhatsApp já com a mensagem escrita em `whatsappMessage`.
+
+### Instagram
+
+Qualquer um dos formatos funciona:
+
+```ts
+instagram: "@litoralbordados";
+instagram: "litoralbordados";
+instagram: "https://instagram.com/litoralbordados";
+```
+
+---
+
+## Como alterar os textos das seções
+
+Abra **`src/config/content.ts`**. Ali estão, agrupados por seção, todos os textos do site: título principal, descrições, avisos e rótulos dos botões.
+
+Exemplo — o título do Hero:
+
+```ts
+hero: {
+  eyebrow: "Bordados personalizados",
+  headline: {
+    lead: "Detalhes que ganham vida",
+    emphasis: "em cada ponto",   // parte em itálico, com pesponto por baixo
+  },
+  description: "Personalização de uniformes, camisetas...",
+},
+```
+
+O texto institucional da seção Sobre está em `content.about.paragraphs` — é só trocar os parágrafos pelo texto real da empresa quando ele chegar.
+
+Os rótulos dos botões (“Solicitar orçamento”, “Conhecer nossos trabalhos”) ficam em `ctaLabels`, no fim de `src/config/siteConfig.ts`.
+
+---
+
+## Como editar serviços, diferenciais e etapas
+
+| Seção | Arquivo |
+| --- | --- |
+| Serviços | `src/data/services.ts` |
+| Trabalhos (portfólio) | `src/data/portfolio.ts` |
+| Diferenciais | `src/data/differentials.ts` |
+| Como funciona (etapas) | `src/data/process.ts` |
+
+Cada arquivo é uma lista. Para **adicionar**, copie um item e cole abaixo; para **remover**, apague o item. O layout se ajusta sozinho.
+
+Nos serviços, o campo `icon` aceita: `"bordado"`, `"uniforme"`, `"camiseta"`, `"bone"`, `"identidade"` e `"medida"`.
+
+Nos diferenciais, o campo `stitch` escolhe a amostra de ponto desenhada ao lado: `"knot"` (nó francês), `"chain"` (corrente), `"satin"` (cheio), `"cross"` (cruz), `"back"` (atrás) e `"stem"` (haste).
+
+---
+
+## Como adicionar as fotos reais
+
+### 1. Fotos dos trabalhos (seção “Nossos trabalhos”)
+
+1. Copie as fotos para a pasta **`public/portfolio/`**, por exemplo `public/portfolio/uniforme-01.jpg`.
+2. Abra `src/data/portfolio.ts` e, no item correspondente:
+   - troque `image` pelo caminho do arquivo (sempre começando com `/portfolio/`);
+   - **apague a linha `placeholder: true`** (é ela que mostra a etiqueta “Espaço reservado”);
+   - escreva em `alt` uma descrição curta do que aparece na foto.
+
+Antes:
+
+```ts
+{
+  title: "Uniforme corporativo",
+  category: "Uniformes",
+  description: "Logotipo bordado em peças de uniforme...",
+  image: "/portfolio/espaco-01.svg",
+  alt: "Espaço reservado para foto de uniforme bordado",
+  placeholder: true,
+},
+```
+
+Depois:
+
+```ts
+{
+  title: "Uniforme corporativo",
+  category: "Uniformes",
+  description: "Logotipo bordado em peças de uniforme...",
+  image: "/portfolio/uniforme-01.jpg",
+  alt: "Camisa polo azul com o logotipo bordado no peito",
+},
+```
+
+3. Quando **todas** as fotos estiverem no lugar, apague também o aviso `note` em `src/config/content.ts` (`portfolio.note`) — ou substitua por outro texto.
+
+### 2. Foto do Hero (topo da página)
+
+Coloque a foto em `public/images/` e troque o caminho em `src/components/sections/Hero.tsx`, na linha `src="/images/hero-placeholder.svg"`. Remova também a propriedade `badge` para tirar a etiqueta de espaço reservado.
+
+### 3. Foto da seção Sobre
+
+Mesma coisa em `src/components/sections/About.tsx` (`src="/images/sobre-placeholder.svg"`).
+
+### Formato recomendado das fotos
+
+- JPG ou WebP, a partir de 1200 px de largura.
+- Retrato (3:4) ou quadrado funcionam melhor na grade dos trabalhos.
+- Não é preciso comprimir à mão: o Next.js gera automaticamente versões otimizadas (AVIF/WebP) no tamanho certo para cada tela.
+
+---
+
+## Como trocar a logo
+
+Os arquivos da identidade estão em **`public/brand/`**:
+
+| Arquivo | Onde aparece |
+| --- | --- |
+| `logo.svg` | cabeçalho (símbolo + “Litoral Bordados”) |
+| `logo-light.svg` | rodapé (versão para fundo escuro) |
+| `logo-mark.svg` | só o símbolo |
+| `logo-mark-light.svg` | só o símbolo, para fundo escuro |
+| `logo-vertical.svg` | versão empilhada (avatar de redes sociais, etiquetas) |
+| `favicon.svg` | ícone da aba do navegador |
+
+Para usar a logo oficial da empresa, **substitua os arquivos mantendo os mesmos nomes**. Nada mais precisa ser alterado — o site lê os caminhos de `siteConfig.logo`, `logoLight` e `logoMark`.
+
+Se os nomes forem outros, ajuste-os em `src/config/siteConfig.ts`.
+
+### Favicon e ícone do celular
+
+Além de `public/brand/favicon.svg`, troque também:
+
+- `src/app/icon.svg` — é este arquivo que o navegador usa na aba;
+- `src/app/apple-icon.png` — ícone de 180×180 px para iPhone/iPad;
+- `src/app/opengraph-image.png` — imagem de 1200×630 px exibida ao compartilhar o link.
+
+### Regerar a identidade provisória
+
+A logo provisória é desenhada por código. Se quiser ajustar a onda (curva, espessura, densidade dos pontos), edite `src/lib/brand/mark.ts` e rode:
+
+```bash
+npm run brand
+```
+
+O comando regera todos os SVGs de `public/brand`, o favicon e os espaços reservados de imagem.
+
+---
+
+## Como alterar a animação do bordado
+
+A animação “Do fio ao bordado” está em:
+
+```text
+src/components/hero/EmbroideryHoop.tsx   ← a animação
+src/components/hero/embroidery.css       ← os estilos dela
+src/lib/brand/mark.ts                    ← o desenho que é bordado
+```
+
+### Mudar o ritmo
+
+No topo de `EmbroideryHoop.tsx` existe a tabela de tempos (em milissegundos):
+
+```ts
+const TEMPOS = {
+  entrada: { inicio: 300, fim: 1000 },   // o fio entra no bastidor
+  orla:    { inicio: 1000, fim: 2250 },  // pesponto da orla
+  salto:   { inicio: 2250, fim: 2600 },  // troca de linha
+  onda:    { inicio: 2600, fim: 4600 },  // ponto cheio da onda
+  saida:   { inicio: 4600, fim: 5050 },  // a agulha sai
+  nome:    { inicio: 4850 },             // o nome é bordado
+  total: 5900,
+};
+```
+
+Diminua os números para acelerar; aumente para deixar mais lento.
+
+### Mudar o desenho bordado
+
+O desenho vem de `src/lib/brand/mark.ts` (`WAVE_CURVE` é a onda e `SHORE_CURVE` é a orla). Alterando essas curvas, mudam ao mesmo tempo a logo, o favicon e a animação — tudo continua coerente. Depois de alterar, rode `npm run brand`.
+
+Em `MARK_SETTINGS`, no mesmo arquivo, é possível ajustar a largura da onda, a distância entre os pontos e a inclinação do ponto cheio.
+
+### Botão “Bordar novamente”
+
+Aparece sozinho ao fim da animação e refaz o bordado. O texto do botão está em `content.hero.replayLabel`.
+
+---
+
+## Depoimentos
+
+A seção existe, mas **não é exibida** enquanto não houver depoimentos reais — nada foi inventado.
+
+Para ativá-la, preencha `src/data/testimonials.ts`:
+
+```ts
+export const testimonials: Testimonial[] = [
+  {
+    quote: "Texto do depoimento, como o cliente escreveu.",
+    author: "Nome do cliente",
+    role: "Empresa ou cargo", // opcional
+  },
+];
+```
+
+Assim que houver um item na lista, a seção aparece automaticamente entre “Como funciona” e o contato final.
+
+---
+
+## Acessibilidade e movimento reduzido
+
+- HTML semântico, títulos em ordem (um `h1` por página) e textos alternativos em todas as imagens.
+- Navegação completa por teclado, com foco visível em coral e link “Pular para o conteúdo”.
+- Menu do celular com `Esc` para fechar, rolagem travada e foco devolvido ao botão.
+- Contraste conferido nas cores de texto sobre linho e sobre azul.
+- **`prefers-reduced-motion`**: quem configura o sistema para reduzir animações vê o bordado já pronto, sem agulha, sem linha correndo e sem animações de entrada.
+- Sem JavaScript, o site continua legível: o bordado aparece finalizado e todas as seções ficam visíveis.
+
+Para testar o modo de movimento reduzido no Windows: *Configurações → Acessibilidade → Efeitos visuais → Efeitos de animação* (desligado). No Chrome também dá para simular em *DevTools → Rendering → Emulate CSS prefers-reduced-motion*.
+
+---
+
+## SEO
+
+Já configurados em `src/app/layout.tsx`:
+
+- título e descrição (`Litoral Bordados | Bordados personalizados`);
+- Open Graph e Twitter Card, com imagem de compartilhamento;
+- `lang="pt-BR"`, canonical, favicon e dados estruturados (`Organization`) — que incluem e-mail, telefone e Instagram **somente quando preenchidos**;
+- `robots.txt` e `sitemap.xml` gerados automaticamente.
+
+O endereço do site é detectado sozinho na Vercel. Quando houver domínio próprio, preencha `url` em `siteConfig` para que os links absolutos usem o domínio definitivo.
+
+---
+
+## Deploy na Vercel
+
+### 1. Enviar o projeto para o GitHub
+
+Se o projeto ainda não estiver em um repositório:
+
+```bash
+git init
+git add .
+git commit -m "Site da Litoral Bordados"
+git branch -M main
+git remote add origin https://github.com/SEU-USUARIO/litoral-bordados.git
+git push -u origin main
+```
+
+### 2. Importar na Vercel
+
+1. Acesse <https://vercel.com> e entre com a conta do GitHub.
+2. Clique em **Add New… → Project**.
+3. Em **Import Git Repository**, escolha o repositório `litoral-bordados`.
+4. A Vercel reconhece o Next.js sozinha — **não é preciso mudar nenhuma configuração**:
+   - Framework Preset: `Next.js`
+   - Build Command: `npm run build`
+   - Output Directory: (automático)
+   - Environment Variables: nenhuma
+5. Clique em **Deploy** e aguarde cerca de um minuto.
+6. Ao final, a Vercel mostra o endereço gerado (algo como `https://litoral-bordados.vercel.app`). É só clicar para abrir.
+
+### 3. Domínio próprio (opcional)
+
+No painel do projeto: **Settings → Domains → Add**. Informe o domínio e siga as instruções de DNS mostradas na tela. Depois, preencha `url` em `src/config/siteConfig.ts` com o endereço final.
+
+---
+
+## Como atualizar o site depois de publicado
+
+O fluxo é sempre o mesmo:
+
+```text
+alterar o código (ou trocar uma foto)
+        ↓
+git add .
+git commit -m "Atualiza fotos dos trabalhos"
+        ↓
+git push
+        ↓
+a Vercel publica sozinha em ~1 minuto
+```
+
+Cada `git push` na branch `main` gera um novo deploy automático. Pushes em outras branches geram um endereço de pré-visualização, útil para conferir antes de publicar.
+
+---
+
+## Variáveis de ambiente
+
+**Este projeto não usa nenhuma variável de ambiente.** Não é preciso criar `.env`, nem configurar nada na Vercel além de importar o repositório.
+
+(Opcionalmente, `NEXT_PUBLIC_SITE_URL` pode ser definida para forçar o endereço usado no SEO — mas o normal é preencher `url` em `siteConfig.ts`.)
+
+---
+
+## Checklist de entrega do material da empresa
+
+Quando a Litoral Bordados enviar o material oficial, siga esta lista:
+
+- [ ] **WhatsApp** → `whatsapp` em `src/config/siteConfig.ts` (só números, com 55 + DDD)
+- [ ] **Telefone** → `phone`
+- [ ] **E-mail** → `email`
+- [ ] **Instagram** → `instagram`
+- [ ] **Endereço** → `address`
+- [ ] **Horário de atendimento** → `openingHours`
+- [ ] **Texto do Sobre** → `about.paragraphs` em `src/config/content.ts`
+- [ ] **Fotos dos trabalhos** → `public/portfolio/` + `src/data/portfolio.ts` (remover `placeholder: true`)
+- [ ] **Foto do Hero** → `public/images/` + `src/components/sections/Hero.tsx`
+- [ ] **Foto do ateliê/equipe** → `public/images/` + `src/components/sections/About.tsx`
+- [ ] **Logo oficial** → substituir os arquivos de `public/brand/` (e `src/app/icon.svg`, `apple-icon.png`, `opengraph-image.png`)
+- [ ] **Depoimentos** → `src/data/testimonials.ts`
+- [ ] **Domínio próprio** → `url` em `siteConfig.ts` + Vercel → Settings → Domains
+- [ ] Rodar `npm run build` para conferir e dar `git push`
+
+---
+
+## Licença
+
+Projeto desenvolvido sob medida para a Litoral Bordados. A identidade visual criada aqui é provisória e pode ser substituída pela logo oficial a qualquer momento.

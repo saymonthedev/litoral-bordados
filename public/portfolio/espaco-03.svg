@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" fill="none" role="img" aria-label="Espaço reservado para foto de boné bordado">
+  <title>Espaço reservado para foto de boné bordado</title>
+  <defs>
+    <pattern id="trama-2" width="6" height="6" patternUnits="userSpaceOnUse">
+      <path d="M0 0h6M0 3h6" stroke="#F5EFE4" stroke-opacity="0.05" stroke-width="1.2"/>
+      <path d="M0 0v6M3 0v6" stroke="#F5EFE4" stroke-opacity="0.04" stroke-width="1.2"/>
+    </pattern>
+    <radialGradient id="luz-2" cx="32%" cy="24%" r="88%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.2"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1200" fill="#0E2C42"/>
+  <rect width="900" height="1200" fill="url(#trama-2)"/>
+  <rect width="900" height="1200" fill="url(#luz-2)"/>
+  <g stroke="#F5EFE4" stroke-opacity="0.5" fill="none" stroke-linecap="round" stroke-width="4">
+        <path d="M167 203l26 26M193 203l-26 26" stroke-opacity="0.5"/><path d="M302 203l26 26M328 203l-26 26" stroke-opacity="0.5"/><path d="M437 203l26 26M463 203l-26 26" stroke-opacity="0.5"/><path d="M572 203l26 26M598 203l-26 26" stroke-opacity="0.5"/><path d="M707 203l26 26M733 203l-26 26" stroke-opacity="0.5"/><path d="M167 335l26 26M193 335l-26 26" stroke-opacity="0.45"/><path d="M302 335l26 26M328 335l-26 26" stroke-opacity="0.45"/><path d="M437 335l26 26M463 335l-26 26" stroke-opacity="0.45"/><path d="M572 335l26 26M598 335l-26 26" stroke-opacity="0.45"/><path d="M707 335l26 26M733 335l-26 26" stroke-opacity="0.45"/><path d="M167 467l26 26M193 467l-26 26" stroke-opacity="0.4"/><path d="M302 467l26 26M328 467l-26 26" stroke-opacity="0.4"/><path d="M437 467l26 26M463 467l-26 26" stroke-opacity="0.4"/><path d="M572 467l26 26M598 467l-26 26" stroke-opacity="0.4"/><path d="M707 467l26 26M733 467l-26 26" stroke-opacity="0.4"/><path d="M167 599l26 26M193 599l-26 26" stroke-opacity="0.35"/><path d="M302 599l26 26M328 599l-26 26" stroke-opacity="0.35"/><path d="M437 599l26 26M463 599l-26 26" stroke-opacity="0.35"/><path d="M572 599l26 26M598 599l-26 26" stroke-opacity="0.35"/><path d="M707 599l26 26M733 599l-26 26" stroke-opacity="0.35"/><path d="M167 731l26 26M193 731l-26 26" stroke-opacity="0.3"/><path d="M302 731l26 26M328 731l-26 26" stroke-opacity="0.3"/><path d="M437 731l26 26M463 731l-26 26" stroke-opacity="0.3"/><path d="M572 731l26 26M598 731l-26 26" stroke-opacity="0.3"/><path d="M707 731l26 26M733 731l-26 26" stroke-opacity="0.3"/><path d="M167 863l26 26M193 863l-26 26" stroke-opacity="0.25"/><path d="M302 863l26 26M328 863l-26 26" stroke-opacity="0.25"/><path d="M437 863l26 26M463 863l-26 26" stroke-opacity="0.25"/><path d="M572 863l26 26M598 863l-26 26" stroke-opacity="0.25"/><path d="M707 863l26 26M733 863l-26 26" stroke-opacity="0.25"/><path d="M167 995l26 26M193 995l-26 26" stroke-opacity="0.2"/><path d="M302 995l26 26M328 995l-26 26" stroke-opacity="0.2"/><path d="M437 995l26 26M463 995l-26 26" stroke-opacity="0.2"/><path d="M572 995l26 26M598 995l-26 26" stroke-opacity="0.2"/><path d="M707 995l26 26M733 995l-26 26" stroke-opacity="0.2"/>
+      </g>
+      <g stroke="#E07A55" fill="none" stroke-linecap="round" stroke-width="5" stroke-dasharray="18 12"><path d="M180 1032h540"/></g>
+  <rect x="26" y="26" width="848" height="1148" rx="6" stroke="#F5EFE4" stroke-opacity="0.35" stroke-width="2.5" stroke-dasharray="14 10" fill="none"/>
+</svg>
