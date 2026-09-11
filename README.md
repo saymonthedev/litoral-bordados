@@ -1,6 +1,9 @@
 # Litoral Bordados — site institucional
 
-Landing page da **Litoral Bordados**, construída em Next.js e preparada para publicação na Vercel.
+**No ar:** <https://litoral-bordados.vercel.app>
+**Repositório:** <https://github.com/saymonthedev/litoral-bordados>
+
+Landing page da **Litoral Bordados**, construída em Next.js e publicada na Vercel.
 
 A assinatura visual do site é a animação **“Do fio ao bordado”**: no bastidor do topo da página, uma agulha entra puxando a linha, costura o pesponto da orla, troca de linha, preenche a onda em ponto cheio e, no fim, borda o nome da marca — exatamente o mesmo desenho da logo.
 
