@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { Pause, RotateCcw } from "lucide-react";
 import {
   MARK_BOUNDS,
   SHORE_CURVE,
@@ -41,6 +41,15 @@ const TEMPOS = {
   nome: { inicio: 4850 },
   total: 5900,
 };
+
+/** Quanto tempo o bordado pronto descansa antes de começar tudo de novo. */
+const ESPERA = 5000;
+/** Sumiço suave do bordado antes da próxima volta. */
+const SUMICO = 700;
+/** Uma volta completa do laço. */
+const CICLO = TEMPOS.total + ESPERA + SUMICO;
+/** A partir daqui o controle de pausa já aparece na tela. */
+const MOSTRAR_CONTROLE = 1500;
 
 /** Caminho de entrada: o fio chega de fora do bastidor. */
 const ENTRADA: CubicSegment[] = [[-46, 104, -24, 101, -8, 93, 6, 84.2]];
@@ -83,13 +92,15 @@ const suave = (t: number) => t * t * (3 - 2 * t);
 
 type EmbroideryHoopProps = {
   className?: string;
-  /** Rótulo do botão que refaz o bordado. */
+  /** Rótulo do botão que recomeça o bordado. */
   replayLabel: string;
+  /** Rótulo do botão que pausa o laço. */
+  pauseLabel: string;
   /** Descrição da animação para leitores de tela. */
   label: string;
 };
 
-export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoopProps) {
+export function EmbroideryHoop({ className, replayLabel, pauseLabel, label }: EmbroideryHoopProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const agulhaRef = useRef<SVGGElement | null>(null);
   const fioOrlaRef = useRef<SVGPathElement | null>(null);
@@ -100,9 +111,12 @@ export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoop
     orla: shoreStitches.map(() => -1),
     onda: satinStitches.map(() => -1),
   });
+  const opacidadeRef = useRef("");
 
   const [execucao, setExecucao] = useState(0);
-  const [concluido, setConcluido] = useState(false);
+  const [mostrarControle, setMostrarControle] = useState(false);
+  const [pausado, setPausado] = useState(false);
+  const [semMovimento, setSemMovimento] = useState(false);
 
   /** Aplica o estado da animação para um instante `t` (em ms). */
   const desenhar = useCallback((t: number) => {
@@ -200,6 +214,15 @@ export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoop
     // ---- o nome ----
     if (t >= TEMPOS.nome.inicio) svg.dataset.nome = "1";
     else delete svg.dataset.nome;
+
+    // ---- laço: o bordado pronto descansa e some antes da próxima volta ----
+    const inicioSumico = TEMPOS.total + ESPERA;
+    const opacidade = t <= inicioSumico ? 1 : 1 - clamp01((t - inicioSumico) / SUMICO);
+    const valor = opacidade.toFixed(3);
+    if (valor !== opacidadeRef.current) {
+      opacidadeRef.current = valor;
+      svg.style.setProperty("--bordado-op", valor);
+    }
   }, []);
 
   useEffect(() => {
@@ -215,33 +238,65 @@ export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoop
     valores.current.onda.fill(-1);
 
     if (reduzido) {
+      setSemMovimento(true);
       desenhar(TEMPOS.total);
-      setConcluido(true);
       return;
     }
 
-    setConcluido(false);
+    // pausado: descansa no bordado pronto
+    if (pausado) {
+      desenhar(TEMPOS.total);
+      return;
+    }
+
     let frame = 0;
     let anterior = 0;
     let relogio = 0;
+    let rodando = false;
+    let controleVisivel = false;
 
     const passo = (ts: number) => {
       if (!anterior) anterior = ts;
       // o tempo acumulado ignora pausas longas (aba em segundo plano)
       relogio += Math.min(ts - anterior, 64);
       anterior = ts;
+      // fim da volta: recomeça do fio
+      if (relogio >= CICLO) relogio = 0;
       desenhar(relogio);
-      if (relogio < TEMPOS.total) {
-        frame = requestAnimationFrame(passo);
-      } else {
-        setConcluido(true);
+      if (!controleVisivel && relogio >= MOSTRAR_CONTROLE) {
+        controleVisivel = true;
+        setMostrarControle(true);
       }
+      frame = requestAnimationFrame(passo);
+    };
+
+    const tocar = () => {
+      if (rodando) return;
+      rodando = true;
+      anterior = 0;
+      frame = requestAnimationFrame(passo);
+    };
+
+    const segurar = () => {
+      if (!rodando) return;
+      rodando = false;
+      cancelAnimationFrame(frame);
     };
 
     desenhar(0);
-    frame = requestAnimationFrame(passo);
-    return () => cancelAnimationFrame(frame);
-  }, [desenhar, execucao]);
+
+    // o laço só roda enquanto o bastidor está na tela
+    const observador = new IntersectionObserver(
+      ([entrada]) => (entrada.isIntersecting ? tocar() : segurar()),
+      { threshold: 0.15 },
+    );
+    observador.observe(svg);
+
+    return () => {
+      observador.disconnect();
+      segurar();
+    };
+  }, [desenhar, execucao, pausado]);
 
   return (
     <div className={cn("relative", className)}>
@@ -314,8 +369,10 @@ export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoop
         </g>
         <circle cx="200" cy="200" r={RAIO_TECIDO} fill="none" stroke={brandColors.mare} strokeOpacity="0.12" strokeWidth="2" />
 
-        {/* ---------- o bordado ---------- */}
-        <g transform={`translate(${OX} ${OY}) scale(${ESCALA})`}>
+        {/* ---------- o bordado ----------
+            A classe "bordado" faz este grupo (e o nome, abaixo) sumirem
+            juntos no fim de cada volta do laço. */}
+        <g className="bordado" transform={`translate(${OX} ${OY}) scale(${ESCALA})`}>
           {/* fio solto da orla (linha coral) */}
           <path
             ref={fioOrlaRef}
@@ -376,6 +433,7 @@ export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoop
 
         {/* ---------- o nome, bordado letra a letra ---------- */}
         <g
+          className="bordado"
           transform={`translate(${200 - NOME_LARGURA / 2} ${NOME_BASE}) scale(${NOME_TAMANHO / 100}) translate(${-LITORAL.bbox.x} 0)`}
           fill={brandColors.mare}
           stroke={brandColors.mare}
@@ -395,6 +453,7 @@ export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoop
         </g>
 
         <g
+          className="bordado"
           transform={`translate(${200 - SUB_LARGURA / 2} ${SUB_BASE}) scale(${SUB_TAMANHO / 100}) translate(${-BORDADOS.bbox.x} 0)`}
           fill={brandColors.mare}
           stroke={brandColors.mare}
@@ -442,23 +501,38 @@ export function EmbroideryHoop({ className, replayLabel, label }: EmbroideryHoop
         </g>
       </svg>
 
-      {/* botão para rever a animação */}
-      <div className="pointer-events-none absolute inset-x-0 -bottom-2 flex justify-center">
-        <button
-          type="button"
-          onClick={() => setExecucao((n) => n + 1)}
-          className={cn(
-            "pointer-events-auto inline-flex items-center gap-2 rounded-full border border-mare/15 bg-linho/90 px-4 py-2",
-            "text-xs font-semibold tracking-tight text-mare/80 shadow-[0_10px_26px_-18px_rgb(14_44_66/0.9)] backdrop-blur-sm",
-            "transition-[opacity,transform,border-color] duration-500 ease-linha",
-            "hover:-translate-y-0.5 hover:border-coral/40 hover:text-mare",
-            concluido ? "opacity-100" : "pointer-events-none opacity-0",
-          )}
-        >
-          <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />
-          {replayLabel}
-        </button>
-      </div>
+      {/* Controle do laço: como o bordado se repete sozinho, precisa existir
+          um jeito de parar o movimento (WCAG 2.2.2). Pausado, o bastidor
+          descansa com o bordado pronto. */}
+      {semMovimento ? null : (
+        <div className="pointer-events-none absolute inset-x-0 -bottom-2 flex justify-center">
+          <button
+            type="button"
+            onClick={() => {
+              if (pausado) {
+                setPausado(false);
+                setExecucao((n) => n + 1);
+              } else {
+                setPausado(true);
+              }
+            }}
+            className={cn(
+              "pointer-events-auto inline-flex items-center gap-2 rounded-full border border-mare/15 bg-linho/90 px-4 py-2",
+              "text-xs font-semibold tracking-tight text-mare/80 shadow-[0_10px_26px_-18px_rgb(14_44_66/0.9)] backdrop-blur-sm",
+              "transition-[opacity,transform,border-color] duration-500 ease-linha",
+              "hover:-translate-y-0.5 hover:border-coral/40 hover:text-mare",
+              mostrarControle ? "opacity-100" : "pointer-events-none opacity-0",
+            )}
+          >
+            {pausado ? (
+              <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />
+            ) : (
+              <Pause aria-hidden="true" className="h-3.5 w-3.5" />
+            )}
+            {pausado ? replayLabel : pauseLabel}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

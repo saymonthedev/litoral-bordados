@@ -54,6 +54,12 @@ html:not(.js) .bastidor .letra {
   }
 }
 
+/* No fim de cada volta do laço o bordado some suavemente e a agulha recomeça
+   (a variável é escrita pelo componente, quadro a quadro) */
+.bastidor .bordado {
+  opacity: var(--bordado-op, 1);
+}
+
 /* O brilho suave que passa pelo bordado quando ele fica pronto */
 .bastidor .brilho {
   opacity: 0;
