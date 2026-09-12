@@ -1,6 +1,6 @@
 # Litoral Bordados — site institucional
 
-**No ar:** <https://litoral-bordados.litoral-bordados.workers.dev>
+**No ar:** <https://litoralbordados.com>
 **Repositório:** <https://github.com/saymonthedev/litoral-bordados>
 
 Landing page da **Litoral Bordados**, construída em Next.js e publicada na Cloudflare.
