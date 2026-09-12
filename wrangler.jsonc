@@ -10,5 +10,10 @@
     "html_handling": "auto-trailing-slash",
     // endereço inexistente cai na 404.html gerada pelo Next
     "not_found_handling": "404-page"
-  }
+  },
+  // Domínio próprio: a Cloudflare cria o registro de DNS e o certificado HTTPS.
+  "routes": [
+    { "pattern": "litoralbordados.com", "custom_domain": true },
+    { "pattern": "www.litoralbordados.com", "custom_domain": true }
+  ]
 }
