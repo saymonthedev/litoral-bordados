@@ -512,7 +512,7 @@ O primeiro comando gera a pasta `out/`; o segundo envia essa pasta para a Cloudf
 
 > Só os arquivos alterados sobem a cada publicação — as demais já ficam em cache na Cloudflare.
 
-**Publicação automática a cada `git push`** (opcional): no painel da Cloudflare, em **Workers & Pages → litoral-bordados → Settings → Build**, é possível conectar o repositório do GitHub. A partir daí, cada push na `main` publica sozinho, com `npm run build` como comando e `out` como diretório de saída.
+**O repositório já está conectado à Cloudflare**, então no dia a dia basta `git push` na branch `main`: ela mesma roda `npm run build` e `npx wrangler deploy`. A configuração dessa conexão fica em **Compute (Workers) → litoral-bordados → Settings → Build**.
 
 ### 3. Domínio próprio
 
@@ -535,22 +535,24 @@ O fluxo é sempre o mesmo:
 ```text
 alterar o código (ou trocar uma foto)
         ↓
-npm run build          gera a pasta out/
+git add .
+git commit -m "Atualiza fotos dos trabalhos"
         ↓
-npx wrangler deploy    envia para a Cloudflare (~15 s)
+git push
+        ↓
+a Cloudflare builda e publica sozinha (~1 min)
         ↓
 site atualizado em litoralbordados.com
 ```
 
-E, para guardar a alteração no repositório:
+O repositório está conectado à Cloudflare: cada push na branch `main` dispara `npm run build` e `npx wrangler deploy` automaticamente. Pushes em outras branches geram uma pré-visualização, útil para conferir antes de publicar.
+
+Publicar na mão também continua funcionando — útil para testar algo sem passar pelo Git:
 
 ```bash
-git add .
-git commit -m "Atualiza fotos dos trabalhos"
-git push
+npm run build
+npx wrangler deploy
 ```
-
-> **Atenção:** hoje o `git push` **não** publica sozinho — ele apenas guarda o código no GitHub. Quem publica é o `npx wrangler deploy`. Para que o push passe a publicar automaticamente, conecte o repositório conforme o [passo 2 do deploy](#2-publicar).
 
 ---
 
@@ -579,7 +581,7 @@ Quando a Litoral Bordados enviar o material oficial, siga esta lista:
 - [ ] **Logo oficial** → substituir os arquivos de `public/brand/` (e `src/app/icon.svg`, `apple-icon.png`, `opengraph-image.png`)
 - [ ] **Depoimentos** → `src/data/testimonials.ts`
 - [ ] **Domínio** → já configurado (`litoralbordados.com`). Para trocar: `url` em `siteConfig.ts` e as rotas em `wrangler.jsonc`
-- [ ] Publicar: `npm run build` e depois `npx wrangler deploy` (o `git push` guarda o código, mas não publica)
+- [ ] Publicar: `git push` na branch `main` (a Cloudflare builda e publica sozinha)
 
 ---
 
