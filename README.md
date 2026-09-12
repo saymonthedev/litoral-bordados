@@ -1,6 +1,6 @@
 # Litoral Bordados — site institucional
 
-**No ar:** <https://litoral-bordados.vercel.app>
+**No ar:** <https://litoral-bordados.litoral-bordados.workers.dev>
 **Repositório:** <https://github.com/saymonthedev/litoral-bordados>
 
 Landing page da **Litoral Bordados**, construída em Next.js e publicada na Vercel.
@@ -480,9 +480,11 @@ O endereço do site vem do campo `url` em `src/config/siteConfig.ts` — hoje `h
 
 ---
 
-## Deploy (Cloudflare Pages)
+## Deploy (Cloudflare)
 
-O site é publicado como **estático**: `npm run build` gera a pasta `out/`, e é ela que vai para o ar. Não existe servidor Node em produção — só arquivos.
+O site é publicado como **estático**: `npm run build` gera a pasta `out/`, e é ela que vai para o ar. Não existe servidor Node em produção — só arquivos servidos pela rede da Cloudflare.
+
+A configuração do deploy está em [`wrangler.jsonc`](wrangler.jsonc), na raiz do projeto.
 
 ### 1. Enviar o projeto para o GitHub
 
@@ -497,16 +499,20 @@ git remote add origin https://github.com/SEU-USUARIO/litoral-bordados.git
 git push -u origin main
 ```
 
-### 2. Conectar na Cloudflare Pages
+### 2. Publicar
 
-1. Acesse <https://dash.cloudflare.com> → **Workers & Pages → Create → Pages → Connect to Git**.
-2. Autorize o GitHub e escolha o repositório `litoral-bordados`.
-3. Configure o build:
-   - Framework preset: `Next.js (Static HTML Export)` (ou `None`)
-   - Build command: `npm run build`
-   - Build output directory: `out`
-   - Variáveis de ambiente: nenhuma
-4. **Save and Deploy**. Em cerca de um minuto o site fica no ar em `https://litoral-bordados.pages.dev`.
+Com a conta autenticada uma única vez (`npx wrangler login`), publicar é:
+
+```bash
+npm run build
+npx wrangler deploy
+```
+
+O primeiro comando gera a pasta `out/`; o segundo envia essa pasta para a Cloudflare. Em cerca de 15 segundos o site está no ar.
+
+> Só os arquivos alterados sobem a cada publicação — as demais já ficam em cache na Cloudflare.
+
+**Publicação automática a cada `git push`** (opcional): no painel da Cloudflare, em **Workers & Pages → litoral-bordados → Settings → Build**, é possível conectar o repositório do GitHub. A partir daí, cada push na `main` publica sozinho, com `npm run build` como comando e `out` como diretório de saída.
 
 ### 3. Domínio próprio
 
@@ -515,8 +521,8 @@ Para o domínio funcionar na raiz (sem `www`), o DNS precisa estar na Cloudflare
 1. No painel da Cloudflare: **Add a site** → digite o domínio → plano **Free**.
 2. A Cloudflare mostra dois nameservers — copie os dois.
 3. No registrador (na Hostinger: **Domínios → seu domínio → DNS / Nameservers → Alterar nameservers**), cole-os e salve.
-4. Volte em **Workers & Pages → litoral-bordados → Custom domains → Set up a domain** e adicione `litoralbordados.com` e `www.litoralbordados.com`.
-5. Os registros e o certificado HTTPS são criados automaticamente.
+4. Volte em **Workers & Pages → litoral-bordados → Settings → Domains & Routes → Add → Custom domain** e adicione `litoralbordados.com`; repita para `www.litoralbordados.com`.
+5. Os registros de DNS e o certificado HTTPS são criados automaticamente.
 
 A troca de nameservers costuma valer em minutos, mas pode levar até 24h para propagar no mundo todo.
 
