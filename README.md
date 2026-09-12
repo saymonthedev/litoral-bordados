@@ -296,7 +296,7 @@ Mesma coisa em `src/components/sections/About.tsx` (`src="/images/sobre-placehol
 
 - JPG ou WebP, a partir de 1200 px de largura.
 - Retrato (3:4) ou quadrado funcionam melhor na grade dos trabalhos.
-- Não é preciso comprimir à mão: o Next.js gera automaticamente versões otimizadas (AVIF/WebP) no tamanho certo para cada tela.
+- **Comprima antes de subir.** Como o site é estático, não há otimização automática: a foto chega ao visitante exatamente como está no repositório. Uma foto de celular tem 4–8 MB e deixaria o site lento. Salve em JPG ou WebP com até ~1600 px de largura e ~300 KB por arquivo — o <https://squoosh.app> faz isso no navegador, sem instalar nada.
 
 ---
 
@@ -476,11 +476,13 @@ Já configurados em `src/app/layout.tsx`:
 - `lang="pt-BR"`, canonical, favicon e dados estruturados (`Organization`) — que incluem e-mail, telefone e Instagram **somente quando preenchidos**;
 - `robots.txt` e `sitemap.xml` gerados automaticamente.
 
-O endereço do site é detectado sozinho na Vercel. Quando houver domínio próprio, preencha `url` em `siteConfig` para que os links absolutos usem o domínio definitivo.
+O endereço do site vem do campo `url` em `src/config/siteConfig.ts` — hoje `https://litoralbordados.com`. Se o domínio mudar, basta trocar ali: canonical, Open Graph e sitemap acompanham.
 
 ---
 
-## Deploy na Vercel
+## Deploy (Cloudflare Pages)
+
+O site é publicado como **estático**: `npm run build` gera a pasta `out/`, e é ela que vai para o ar. Não existe servidor Node em produção — só arquivos.
 
 ### 1. Enviar o projeto para o GitHub
 
@@ -495,22 +497,28 @@ git remote add origin https://github.com/SEU-USUARIO/litoral-bordados.git
 git push -u origin main
 ```
 
-### 2. Importar na Vercel
+### 2. Conectar na Cloudflare Pages
 
-1. Acesse <https://vercel.com> e entre com a conta do GitHub.
-2. Clique em **Add New… → Project**.
-3. Em **Import Git Repository**, escolha o repositório `litoral-bordados`.
-4. A Vercel reconhece o Next.js sozinha — **não é preciso mudar nenhuma configuração**:
-   - Framework Preset: `Next.js`
-   - Build Command: `npm run build`
-   - Output Directory: (automático)
-   - Environment Variables: nenhuma
-5. Clique em **Deploy** e aguarde cerca de um minuto.
-6. Ao final, a Vercel mostra o endereço gerado (algo como `https://litoral-bordados.vercel.app`). É só clicar para abrir.
+1. Acesse <https://dash.cloudflare.com> → **Workers & Pages → Create → Pages → Connect to Git**.
+2. Autorize o GitHub e escolha o repositório `litoral-bordados`.
+3. Configure o build:
+   - Framework preset: `Next.js (Static HTML Export)` (ou `None`)
+   - Build command: `npm run build`
+   - Build output directory: `out`
+   - Variáveis de ambiente: nenhuma
+4. **Save and Deploy**. Em cerca de um minuto o site fica no ar em `https://litoral-bordados.pages.dev`.
 
-### 3. Domínio próprio (opcional)
+### 3. Domínio próprio
 
-No painel do projeto: **Settings → Domains → Add**. Informe o domínio e siga as instruções de DNS mostradas na tela. Depois, preencha `url` em `src/config/siteConfig.ts` com o endereço final.
+Para o domínio funcionar na raiz (sem `www`), o DNS precisa estar na Cloudflare:
+
+1. No painel da Cloudflare: **Add a site** → digite o domínio → plano **Free**.
+2. A Cloudflare mostra dois nameservers — copie os dois.
+3. No registrador (na Hostinger: **Domínios → seu domínio → DNS / Nameservers → Alterar nameservers**), cole-os e salve.
+4. Volte em **Workers & Pages → litoral-bordados → Custom domains → Set up a domain** e adicione `litoralbordados.com` e `www.litoralbordados.com`.
+5. Os registros e o certificado HTTPS são criados automaticamente.
+
+A troca de nameservers costuma valer em minutos, mas pode levar até 24h para propagar no mundo todo.
 
 ---
 
@@ -526,7 +534,7 @@ git commit -m "Atualiza fotos dos trabalhos"
         ↓
 git push
         ↓
-a Vercel publica sozinha em ~1 minuto
+a Cloudflare publica sozinha em ~1 minuto
 ```
 
 Cada `git push` na branch `main` gera um novo deploy automático. Pushes em outras branches geram um endereço de pré-visualização, útil para conferir antes de publicar.
@@ -535,7 +543,7 @@ Cada `git push` na branch `main` gera um novo deploy automático. Pushes em outr
 
 ## Variáveis de ambiente
 
-**Este projeto não usa nenhuma variável de ambiente.** Não é preciso criar `.env`, nem configurar nada na Vercel além de importar o repositório.
+**Este projeto não usa nenhuma variável de ambiente.** Não é preciso criar `.env`, nem configurar nada na Cloudflare além de conectar o repositório.
 
 (Opcionalmente, `NEXT_PUBLIC_SITE_URL` pode ser definida para forçar o endereço usado no SEO — mas o normal é preencher `url` em `siteConfig.ts`.)
 

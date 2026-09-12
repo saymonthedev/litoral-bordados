@@ -65,11 +65,10 @@ export const siteConfig = {
    * ---------------------------------------------------------------- */
 
   /**
-   * Endereço final do site. Pode ficar vazio: na Vercel o domínio é
-   * detectado automaticamente no build. Preencha quando houver
-   * domínio próprio, ex.: "https://litoralbordados.com.br".
+   * Endereço final do site, usado no SEO (canonical, Open Graph, sitemap).
+   * Sempre sem a barra no fim.
    */
-  url: "",
+  url: "https://litoralbordados.com",
   locale: "pt-BR",
 } as const;
 
