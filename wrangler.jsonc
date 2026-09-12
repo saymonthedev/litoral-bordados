@@ -1,0 +1,14 @@
+{
+  // Publicação do site na Cloudflare (Workers com assets estáticos).
+  // O build (`npm run build`) gera a pasta out/, e é ela que vai para o ar.
+  // Para publicar: npx wrangler deploy
+  "name": "litoral-bordados",
+  "compatibility_date": "2026-09-11",
+  "assets": {
+    "directory": "./out",
+    // /pagina e /pagina/ apontam para o mesmo arquivo
+    "html_handling": "auto-trailing-slash",
+    // endereço inexistente cai na 404.html gerada pelo Next
+    "not_found_handling": "404-page"
+  }
+}
