@@ -535,15 +535,22 @@ O fluxo é sempre o mesmo:
 ```text
 alterar o código (ou trocar uma foto)
         ↓
-git add .
-git commit -m "Atualiza fotos dos trabalhos"
+npm run build          gera a pasta out/
         ↓
-git push
+npx wrangler deploy    envia para a Cloudflare (~15 s)
         ↓
-a Cloudflare publica sozinha em ~1 minuto
+site atualizado em litoralbordados.com
 ```
 
-Cada `git push` na branch `main` gera um novo deploy automático. Pushes em outras branches geram um endereço de pré-visualização, útil para conferir antes de publicar.
+E, para guardar a alteração no repositório:
+
+```bash
+git add .
+git commit -m "Atualiza fotos dos trabalhos"
+git push
+```
+
+> **Atenção:** hoje o `git push` **não** publica sozinho — ele apenas guarda o código no GitHub. Quem publica é o `npx wrangler deploy`. Para que o push passe a publicar automaticamente, conecte o repositório conforme o [passo 2 do deploy](#2-publicar).
 
 ---
 
@@ -571,8 +578,8 @@ Quando a Litoral Bordados enviar o material oficial, siga esta lista:
 - [ ] **Foto do ateliê/equipe** → `public/images/` + `src/components/sections/About.tsx`
 - [ ] **Logo oficial** → substituir os arquivos de `public/brand/` (e `src/app/icon.svg`, `apple-icon.png`, `opengraph-image.png`)
 - [ ] **Depoimentos** → `src/data/testimonials.ts`
-- [ ] **Domínio próprio** → `url` em `siteConfig.ts` + Vercel → Settings → Domains
-- [ ] Rodar `npm run build` para conferir e dar `git push`
+- [ ] **Domínio** → já configurado (`litoralbordados.com`). Para trocar: `url` em `siteConfig.ts` e as rotas em `wrangler.jsonc`
+- [ ] Publicar: `npm run build` e depois `npx wrangler deploy` (o `git push` guarda o código, mas não publica)
 
 ---
 
