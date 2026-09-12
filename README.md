@@ -3,7 +3,7 @@
 **No ar:** <https://litoral-bordados.litoral-bordados.workers.dev>
 **Repositório:** <https://github.com/saymonthedev/litoral-bordados>
 
-Landing page da **Litoral Bordados**, construída em Next.js e publicada na Vercel.
+Landing page da **Litoral Bordados**, construída em Next.js e publicada na Cloudflare.
 
 A assinatura visual do site é a animação **“Do fio ao bordado”**: no bastidor do topo da página, uma agulha entra puxando a linha, costura o pesponto da orla, troca de linha, preenche a onda em ponto cheio e, no fim, borda o nome da marca — exatamente o mesmo desenho da logo.
 
@@ -27,7 +27,7 @@ A assinatura visual do site é a animação **“Do fio ao bordado”**: no bast
 12. [Depoimentos](#depoimentos)
 13. [Acessibilidade e movimento reduzido](#acessibilidade-e-movimento-reduzido)
 14. [SEO](#seo)
-15. [Deploy na Vercel](#deploy-na-vercel)
+15. [Deploy (Cloudflare)](#deploy-cloudflare)
 16. [Como atualizar o site depois de publicado](#como-atualizar-o-site-depois-de-publicado)
 17. [Variáveis de ambiente](#variáveis-de-ambiente)
 18. [Checklist de entrega do material da empresa](#checklist-de-entrega-do-material-da-empresa)
@@ -38,7 +38,7 @@ A assinatura visual do site é a animação **“Do fio ao bordado”**: no bast
 
 | Ferramenta | Para quê |
 | --- | --- |
-| [Next.js 16](https://nextjs.org) (App Router) | Estrutura do site, SEO e otimização de imagens |
+| [Next.js 16](https://nextjs.org) (App Router) | Estrutura do site, SEO e geração dos arquivos estáticos |
 | React 19 + TypeScript | Componentes e segurança de tipos |
 | [Tailwind CSS 4](https://tailwindcss.com) | Estilos, tema e responsividade |
 | [lucide-react](https://lucide.dev) | Ícones de interface (menu, setas, contato) |
@@ -173,7 +173,7 @@ export const siteConfig = {
   address: "",           // ex.: "Rua Exemplo, 000 — Bairro, Cidade/UF"
   openingHours: "",      // ex.: "Segunda a sexta, 8h às 18h"
 
-  url: "",               // domínio próprio, quando houver
+  url: "https://litoralbordados.com",   // endereço final do site
 };
 ```
 
