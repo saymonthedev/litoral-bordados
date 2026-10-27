@@ -4,7 +4,7 @@ import { content } from "@/config/content";
 import { siteConfig } from "@/config/siteConfig";
 
 /**
- * Sobre — texto institucional, sem números, datas ou histórias que não
+ * Sobre — texto sobre a empresa, sem números, datas ou histórias que não
  * foram informadas pela empresa. É só substituir os parágrafos em
  * src/config/content.ts quando o texto oficial chegar.
  */

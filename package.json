@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Landing page institucional da Litoral Bordados.",
+  "description": "Landing page da Litoral Bordados.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "preview": "npx wrangler dev",
     "typecheck": "tsc --noEmit",
     "brand": "node scripts/generate-brand.ts"
   },

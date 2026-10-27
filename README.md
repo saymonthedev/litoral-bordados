@@ -1,4 +1,4 @@
-# Litoral Bordados — site institucional
+# Litoral Bordados — landing page
 
 **No ar:** <https://litoralbordados.com>
 **Repositório:** <https://github.com/saymonthedev/litoral-bordados>
@@ -24,13 +24,15 @@ A assinatura visual do site é a animação **“Do fio ao bordado”**: no bast
 9. [Como adicionar as fotos reais](#como-adicionar-as-fotos-reais)
 10. [Como trocar a logo](#como-trocar-a-logo)
 11. [Como alterar a animação do bordado](#como-alterar-a-animação-do-bordado)
-12. [Depoimentos](#depoimentos)
-13. [Acessibilidade e movimento reduzido](#acessibilidade-e-movimento-reduzido)
-14. [SEO](#seo)
-15. [Deploy (Cloudflare)](#deploy-cloudflare)
-16. [Como atualizar o site depois de publicado](#como-atualizar-o-site-depois-de-publicado)
-17. [Variáveis de ambiente](#variáveis-de-ambiente)
-18. [Checklist de entrega do material da empresa](#checklist-de-entrega-do-material-da-empresa)
+12. [Como ajustar o arraste (rolagem e parallax)](#como-ajustar-o-arraste-rolagem-e-parallax)
+13. [Depoimentos](#depoimentos)
+14. [Acessibilidade e movimento reduzido](#acessibilidade-e-movimento-reduzido)
+15. [SEO](#seo)
+16. [Deploy (Cloudflare)](#deploy-cloudflare)
+17. [Como atualizar o site depois de publicado](#como-atualizar-o-site-depois-de-publicado)
+18. [Variáveis de ambiente](#variáveis-de-ambiente)
+19. [Checklist de entrega do material da empresa](#checklist-de-entrega-do-material-da-empresa)
+20. [Licença](#licença)
 
 ---
 
@@ -46,7 +48,7 @@ A assinatura visual do site é a animação **“Do fio ao bordado”**: no bast
 
 A animação do bordado e o parallax são feitos à mão, com SVG, CSS e um pequeno laço de `requestAnimationFrame`. A única biblioteca de movimento é o Lenis (~3 KB), responsável só pela inércia da rolagem.
 
-**Requisito:** Node.js **20.9 ou superior** (`node -v` para conferir).
+**Requisito:** Node.js **20.9 ou superior** (`node -v` para conferir). O build na Cloudflare usa o Node 22, definido em `.nvmrc`.
 
 ---
 
@@ -82,23 +84,24 @@ Para conferir se está tudo certo antes de publicar:
 npm run build
 ```
 
-O comando compila o site e verifica os tipos do TypeScript. Se aparecer algum erro, ele indica o arquivo e a linha.
+O comando compila o site, verifica os tipos do TypeScript e gera a pasta `out/` com o site pronto. Se aparecer algum erro, ele indica o arquivo e a linha.
 
-Para rodar localmente a versão compilada (igual à da internet):
+Para ver localmente a versão compilada, servida do mesmo jeito que na Cloudflare:
 
 ```bash
-npm start
+npm run build
+npm run preview
 ```
 
-E o site fica em <http://localhost:3000>.
+O site fica em <http://localhost:8787>. (O `next start` não serve aqui: o site é estático e não tem servidor Node.)
 
 ### Todos os comandos disponíveis
 
 | Comando | O que faz |
 | --- | --- |
 | `npm run dev` | Servidor de desenvolvimento |
-| `npm run build` | Compila para produção |
-| `npm start` | Roda a versão compilada |
+| `npm run build` | Compila para produção (gera `out/`) |
+| `npm run preview` | Serve a pasta `out/` localmente, como na Cloudflare |
 | `npm run typecheck` | Só a checagem de tipos |
 | `npm run brand` | Regera os SVGs da marca e os espaços reservados de imagem |
 
@@ -224,7 +227,7 @@ hero: {
 },
 ```
 
-O texto institucional da seção Sobre está em `content.about.paragraphs` — é só trocar os parágrafos pelo texto real da empresa quando ele chegar.
+O texto da seção Sobre está em `content.about.paragraphs` — é só trocar os parágrafos pelo texto real da empresa quando ele chegar.
 
 Os rótulos dos botões (“Solicitar orçamento”, “Conhecer nossos trabalhos”) ficam em `ctaLabels`, no fim de `src/config/siteConfig.ts`.
 
@@ -486,45 +489,27 @@ O site é publicado como **estático**: `npm run build` gera a pasta `out/`, e �
 
 A configuração do deploy está em [`wrangler.jsonc`](wrangler.jsonc), na raiz do projeto.
 
-### 1. Enviar o projeto para o GitHub
+### Como está publicado hoje
 
-Se o projeto ainda não estiver em um repositório:
+- O repositório está no GitHub e **conectado à Cloudflare**: cada `git push` na branch `main` roda `npm run build` e `npx wrangler deploy` sozinho. A conexão fica no painel da Cloudflare, no Worker **litoral-bordados → Settings → Build**.
+- O domínio **litoralbordados.com** (e o `www`) já aponta para o site. O DNS está na Cloudflare, e as rotas estão declaradas em `wrangler.jsonc`, com o certificado HTTPS criado automaticamente.
 
-```bash
-git init
-git add .
-git commit -m "Site da Litoral Bordados"
-git branch -M main
-git remote add origin https://github.com/SEU-USUARIO/litoral-bordados.git
-git push -u origin main
-```
+### Publicar na mão
 
-### 2. Publicar
-
-Com a conta autenticada uma única vez (`npx wrangler login`), publicar é:
+Útil para testar algo sem passar pelo Git. Com a conta autenticada uma única vez (`npx wrangler login`):
 
 ```bash
 npm run build
 npx wrangler deploy
 ```
 
-O primeiro comando gera a pasta `out/`; o segundo envia essa pasta para a Cloudflare. Em cerca de 15 segundos o site está no ar.
+O primeiro comando gera a pasta `out/`; o segundo envia essa pasta para a Cloudflare. Em cerca de 15 segundos o site está no ar. Só os arquivos alterados sobem a cada publicação.
 
-> Só os arquivos alterados sobem a cada publicação — as demais já ficam em cache na Cloudflare.
+### Se o domínio mudar um dia
 
-**O repositório já está conectado à Cloudflare**, então no dia a dia basta `git push` na branch `main`: ela mesma roda `npm run build` e `npx wrangler deploy`. A configuração dessa conexão fica em **Compute (Workers) → litoral-bordados → Settings → Build**.
-
-### 3. Domínio próprio
-
-Para o domínio funcionar na raiz (sem `www`), o DNS precisa estar na Cloudflare:
-
-1. No painel da Cloudflare: **Add a site** → digite o domínio → plano **Free**.
-2. A Cloudflare mostra dois nameservers — copie os dois.
-3. No registrador (na Hostinger: **Domínios → seu domínio → DNS / Nameservers → Alterar nameservers**), cole-os e salve.
-4. Volte em **Workers & Pages → litoral-bordados → Settings → Domains & Routes → Add → Custom domain** e adicione `litoralbordados.com`; repita para `www.litoralbordados.com`.
-5. Os registros de DNS e o certificado HTTPS são criados automaticamente.
-
-A troca de nameservers costuma valer em minutos, mas pode levar até 24h para propagar no mundo todo.
+1. O domínio novo precisa estar com o DNS na Cloudflare: no painel, **Add a site** → plano **Free**, e troque os nameservers no registrador (hoje o domínio é da Hostinger) pelos dois que a Cloudflare mostrar.
+2. Troque o domínio em `routes`, no `wrangler.jsonc`, e em `url`, no `src/config/siteConfig.ts`.
+3. Faça o push. A troca de nameservers costuma valer em minutos, mas pode levar até 24h.
 
 ---
 
@@ -545,14 +530,9 @@ a Cloudflare builda e publica sozinha (~1 min)
 site atualizado em litoralbordados.com
 ```
 
-O repositório está conectado à Cloudflare: cada push na branch `main` dispara `npm run build` e `npx wrangler deploy` automaticamente. Pushes em outras branches geram uma pré-visualização, útil para conferir antes de publicar.
+O repositório está conectado à Cloudflare: cada push na branch `main` dispara `npm run build` e `npx wrangler deploy` automaticamente. Se a opção de builds para outras branches estiver ligada em **Settings → Build**, pushes em outras branches geram uma pré-visualização, útil para conferir antes de publicar.
 
-Publicar na mão também continua funcionando — útil para testar algo sem passar pelo Git:
-
-```bash
-npm run build
-npx wrangler deploy
-```
+Para publicar sem passar pelo Git, veja [Publicar na mão](#publicar-na-mão).
 
 ---
 

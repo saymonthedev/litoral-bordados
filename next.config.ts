@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  // O site é publicado como estático (Cloudflare Pages).
+  // O site é publicado como estático na Cloudflare (Workers com arquivos estáticos).
   // `npm run build` gera a pasta out/ com o site pronto.
   output: "export",
   images: {
