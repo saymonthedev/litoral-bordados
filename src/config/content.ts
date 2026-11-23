@@ -4,10 +4,10 @@
  * │  Todo o conteúdo escrito das seções está reunido aqui.          │
  * └─────────────────────────────────────────────────────────────────┘
  *
- * Os textos atuais são institucionais e propositalmente genéricos:
- * nenhuma informação sobre história, tempo de mercado, clientes ou
- * números foi inventada. Basta substituir pelas informações reais
- * quando a empresa enviá-las.
+ * Projeto conceitual de portfólio: a Litoral Bordados é uma empresa
+ * fictícia. Os textos são institucionais e não inventam história, tempo de
+ * mercado ou números; o que é fictício (marcas, endereço, depoimentos) vem
+ * avisado na própria página.
  *
  * As listas (serviços, trabalhos, diferenciais, etapas) ficam em /src/data.
  */
@@ -23,8 +23,8 @@ export const content = {
     description:
       "Personalização de uniformes, camisetas, bonés e peças sob medida. Da primeira conversa à peça pronta, o bordado é feito com precisão, cuidado e acabamento impecável.",
     highlights: ["Uniformes", "Camisetas", "Bonés", "Peças sob medida"],
-    /** Legenda discreta do espaço reservado para a futura foto do Hero. */
-    photoCaption: "Espaço reservado para foto dos trabalhos",
+    /** Legenda discreta abaixo do bastidor. */
+    photoCaption: "Do fio ao bordado, ponto a ponto",
     replayLabel: "Bordar novamente",
     pauseLabel: "Pausar bordado",
     scrollLabel: "Role para ver mais",
@@ -41,8 +41,8 @@ export const content = {
     eyebrow: "Nossos trabalhos",
     title: "Trabalhos que ganham vida em cada ponto.",
     description: "Os tipos de peça que personalizamos com bordado.",
-    /** Aviso honesto enquanto as fotos reais não chegam. */
-    note: "As fotos dos nossos bordados serão publicadas em breve. Os espaços abaixo já estão reservados para elas.",
+    /** Aviso honesto: a galeria é de um projeto conceitual. */
+    note: "Projeto conceitual: as peças e as marcas desta galeria são fictícias, criadas para demonstrar o site.",
     placeholderBadge: "Espaço reservado",
   },
 
@@ -54,7 +54,7 @@ export const content = {
       "O bordado é um processo de precisão. A definição do desenho, a densidade dos pontos, a escolha da linha e o acabamento do avesso fazem a diferença entre uma peça comum e uma peça bem-feita — e é nesse detalhe que a gente trabalha.",
       "Por isso cada peça é tratada de forma individual, do primeiro traço ao último ponto.",
     ],
-    photoCaption: "Espaço reservado para foto do ateliê ou da equipe",
+    photoCaption: "No ateliê, cada linha tem o seu lugar",
   },
 
   differentials: {
@@ -86,6 +86,10 @@ export const content = {
     navTitle: "Navegação",
     contactTitle: "Contato",
     rights: "Todos os direitos reservados.",
+    /** Aviso de projeto conceitual, no mesmo padrão dos outros projetos do portfólio. */
+    concept:
+      "Projeto conceitual de portfólio: marca, peças, endereço e depoimentos são fictícios. Peças bordadas geradas em código; fotos do ateliê de Igor Ovsyannykov (Unsplash, domínio público).",
+    madeBy: "Design e desenvolvimento: Saymon Oliveira de Castro",
     backToTop: "Voltar ao topo",
   },
 } as const;

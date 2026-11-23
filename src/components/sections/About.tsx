@@ -27,11 +27,10 @@ export function About() {
           />
 
           <PhotoFrame
-            src="/images/sobre-placeholder.svg"
-            alt="Espaço reservado para uma foto do ateliê da Litoral Bordados"
+            src="/images/sobre-atelie.webp"
+            alt="Cesta com carretéis e linhas num ateliê de costura"
             aspect="aspect-[6/5]"
             sizes="(max-width: 1023px) 92vw, 38vw"
-            badge={content.portfolio.placeholderBadge}
             caption={content.about.photoCaption}
             className="relative"
           />

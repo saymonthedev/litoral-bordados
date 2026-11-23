@@ -1,0 +1,254 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Manrope:wght@700;800&family=Great+Vibes&display=block');
+body{margin:0;background:#111}
+</style></head>
+<body>
+<script>
+// Gerador de "fotos" de bordado: tecido com trama, pontos com brilho de linha,
+// sombra de relevo e desfoque de lente nas bordas. Tudo fictício.
+const rand = (() => { let s = 1234567; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+const hex = (h) => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+const rgb = (c, k = 1, a = 1) => `rgba(${Math.min(255, c[0]*k)|0},${Math.min(255, c[1]*k)|0},${Math.min(255, c[2]*k)|0},${a})`;
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+
+/* ---------- Tecidos ---------- */
+function weaveTile(kind, base) {
+  const b = hex(base); const t = mk(12, 12); const x = t.getContext('2d');
+  x.fillStyle = rgb(b); x.fillRect(0, 0, 12, 12);
+  const px = (i, j, k) => { x.fillStyle = rgb(b, k); x.fillRect(i, j, 1, 1); };
+  for (let i = 0; i < 12; i++) for (let j = 0; j < 12; j++) {
+    if (kind === 'twill') px(i, j, ((i + j) % 4) < 2 ? 1.10 : 0.86);
+    else if (kind === 'gabardine') px(i, j, ((i + j) % 3) === 0 ? 0.93 : 1.03);
+    else if (kind === 'pique') { const cx = (i % 6) - 2.5, cy = (j % 6) - 2.5; px(i, j, (cx*cx + cy*cy) < 5 ? 1.08 : 0.84); }
+    else if (kind === 'jersey') { const col = i % 4; const v = (col === 0 || col === 3) ? 0.86 : 1.08; px(i, j, v * (((j + (col < 2 ? 0 : 1)) % 3) === 0 ? 0.94 : 1)); }
+    else if (kind === 'plain') px(i, j, ((i + j) % 2) ? 1.07 : 0.9);
+    else if (kind === 'denim') px(i, j, ((i + j) % 4) < 3 ? 1.0 : 1.55);
+    else px(i, j, 1);
+  }
+  return t;
+}
+function fabric(W, H, kind, base, scale) {
+  const c = mk(W, H); const x = c.getContext('2d');
+  const tile = weaveTile(kind, base);
+  const big = mk(12 * scale, 12 * scale); const bx = big.getContext('2d');
+  bx.imageSmoothingEnabled = true; bx.drawImage(tile, 0, 0, 12 * scale, 12 * scale);
+  x.fillStyle = x.createPattern(big, 'repeat'); x.fillRect(0, 0, W, H);
+  if (kind === 'terry') {
+    const b = hex(base);
+    for (let n = 0; n < W * H / 7; n++) {
+      const px = rand() * W, py = rand() * H, r = 1.1 + rand() * 1.5;
+      x.fillStyle = rgb(b, 0.8, 0.45); x.beginPath(); x.arc(px + 0.9, py + 1.1, r, 0, 7); x.fill();
+      x.fillStyle = rgb(b, 1.02 + rand() * 0.07, 0.85); x.beginPath(); x.arc(px, py, r * 0.85, 0, 7); x.fill();
+    }
+    x.filter = 'blur(0.7px)'; x.drawImage(c, 0, 0); x.filter = 'none';
+  }
+  // fibras: ruído fino
+  const img = x.getImageData(0, 0, W, H); const d = img.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (rand() - 0.5) * 18; d[i] += n; d[i+1] += n; d[i+2] += n; }
+  x.putImageData(img, 0, 0);
+  // dobras suaves
+  x.save(); x.filter = 'blur(60px)';
+  for (let k = 0; k < 4; k++) {
+    x.fillStyle = k % 2 ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.08)';
+    x.beginPath(); const y0 = rand() * H; x.ellipse(rand() * W, y0, W * 0.6, 70 + rand() * 90, -0.5 + rand() * 0.4, 0, 7); x.fill();
+  }
+  x.restore();
+  return c;
+}
+
+/* ---------- Bordado ---------- */
+// Relevo: o cetim é mais alto no meio do traço. Borda de cima clareia, de baixo escurece.
+function bevel(ctx, W, H, mask, d) {
+  const b = mk(W, H); const bx = b.getContext('2d'); bx.filter = `blur(${d * 1.6}px)`; bx.drawImage(mask, 0, 0);
+  const lit = mk(W, H); const lx = lit.getContext('2d');
+  lx.drawImage(b, 0, 0); lx.globalCompositeOperation = 'destination-out'; lx.drawImage(b, d, d);
+  lx.globalCompositeOperation = 'destination-in'; lx.drawImage(mask, 0, 0);
+  lx.globalCompositeOperation = 'source-in'; lx.fillStyle = 'rgba(255,250,240,1)'; lx.fillRect(0, 0, W, H);
+  const dark = mk(W, H); const dx = dark.getContext('2d');
+  dx.drawImage(b, 0, 0); dx.globalCompositeOperation = 'destination-out'; dx.drawImage(b, -d, -d);
+  dx.globalCompositeOperation = 'destination-in'; dx.drawImage(mask, 0, 0);
+  dx.globalCompositeOperation = 'source-in'; dx.fillStyle = 'rgba(10,15,25,1)'; dx.fillRect(0, 0, W, H);
+  ctx.save(); ctx.globalAlpha = 0.55; ctx.drawImage(lit, 0, 0); ctx.globalAlpha = 0.6; ctx.drawImage(dark, 0, 0); ctx.restore();
+}
+// shape: função que desenha a forma (preenchida) num contexto
+function stitchLayer(W, H, shape, color, opt = {}) {
+  const angle = opt.angle ?? -0.9, gap = opt.spacing ?? 4.2, len = opt.len ?? 0, jitter = opt.jitter ?? 0.07;
+  const col = hex(color);
+  const mask = mk(W, H); const mx = mask.getContext('2d'); mx.fillStyle = '#fff'; mx.strokeStyle = '#fff'; mx.lineCap = 'round'; mx.lineJoin = 'round'; shape(mx);
+  const s = mk(W, H); const sx = s.getContext('2d');
+  if (opt.radial) {
+    const [rcx, rcy, r0, r1] = opt.radial;
+    const step = gap / r1;
+    for (let a = 0; a < Math.PI * 2; a += step) {
+      const k = 1 + (rand() - 0.5) * 2 * jitter;
+      const x0 = rcx + Math.cos(a) * r0, y0 = rcy + Math.sin(a) * r0, x1 = rcx + Math.cos(a) * r1, y1 = rcy + Math.sin(a) * r1;
+      sx.lineCap = 'round';
+      sx.strokeStyle = rgb(col, 0.55 * k); sx.lineWidth = gap * 1.05; sx.beginPath(); sx.moveTo(x0, y0); sx.lineTo(x1, y1); sx.stroke();
+      sx.strokeStyle = rgb(col, 1.0 * k); sx.lineWidth = gap * 0.7; sx.beginPath(); sx.moveTo(x0, y0); sx.lineTo(x1, y1); sx.stroke();
+      sx.strokeStyle = rgb(col, 1.38 * k, 0.5); sx.lineWidth = gap * 0.2; sx.beginPath(); sx.moveTo(x0 - 0.8, y0 - 0.8); sx.lineTo(x1 - 0.8, y1 - 0.8); sx.stroke();
+    }
+    sx.globalCompositeOperation = 'destination-in'; sx.drawImage(mask, 0, 0);
+    return { stitches: s, mask };
+  }
+  sx.translate(W / 2, H / 2); sx.rotate(angle);
+  const R = Math.hypot(W, H) / 2 + 20;
+  let row = 0;
+  for (let y = -R; y < R; y += gap, row++) {
+    const drawSeg = (x0, x1) => {
+      const k = 1 + (rand() - 0.5) * 2 * jitter;
+      sx.lineCap = 'round';
+      sx.strokeStyle = rgb(col, 0.55 * k); sx.lineWidth = gap * 1.05; sx.beginPath(); sx.moveTo(x0, y); sx.lineTo(x1, y); sx.stroke();
+      sx.strokeStyle = rgb(col, 1.0 * k); sx.lineWidth = gap * 0.72; sx.beginPath(); sx.moveTo(x0, y - gap * 0.06); sx.lineTo(x1, y - gap * 0.06); sx.stroke();
+      sx.strokeStyle = rgb(col, 1.38 * k, 0.55); sx.lineWidth = gap * 0.22; sx.beginPath(); sx.moveTo(x0, y - gap * 0.22); sx.lineTo(x1, y - gap * 0.22); sx.stroke();
+    };
+    if (!len) { drawSeg(-R, R); continue; }
+    const off = ((row * len * 0.37) % len);
+    for (let x = -R - off; x < R; x += len) drawSeg(x + 1.2, x + len - 1.2);
+  }
+  sx.setTransform(1, 0, 0, 1, 0, 0);
+  sx.globalCompositeOperation = 'destination-in'; sx.drawImage(mask, 0, 0);
+  return { stitches: s, mask };
+}
+function embroider(ctx, W, H, layers, depth = 1) {
+  // sombra de relevo e franzido do tecido em volta
+  for (const L of layers) {
+    const sh = mk(W, H); const shx = sh.getContext('2d');
+    shx.drawImage(L.mask, 0, 0); shx.globalCompositeOperation = 'source-in'; shx.fillStyle = '#000'; shx.fillRect(0, 0, W, H);
+    ctx.save(); ctx.filter = `blur(${12 * depth}px)`; ctx.globalAlpha = 0.22; ctx.drawImage(sh, 2 * depth, 4 * depth); ctx.restore();
+    ctx.save(); ctx.filter = `blur(${3.2 * depth}px)`; ctx.globalAlpha = 0.55; ctx.drawImage(sh, 2.5 * depth, 3.5 * depth); ctx.restore();
+  }
+  for (const L of layers) {
+    ctx.drawImage(L.stitches, 0, 0);
+    bevel(ctx, W, H, L.mask, L.bevel ?? 3.2);
+    // luz de cima à esquerda sobre o relevo
+    const hl = mk(W, H); const hx = hl.getContext('2d');
+    hx.drawImage(L.mask, 0, 0); hx.globalCompositeOperation = 'source-in';
+    const g = hx.createLinearGradient(0, 0, W, H); g.addColorStop(0, 'rgba(255,255,255,0.16)'); g.addColorStop(1, 'rgba(0,0,0,0.12)');
+    hx.fillStyle = g; hx.fillRect(0, 0, W, H);
+    ctx.drawImage(hl, 0, 0);
+  }
+}
+function finish(c, opts = {}) {
+  const W = c.width, H = c.height; const x = c.getContext('2d');
+  // luz geral e vinheta
+  const g = x.createRadialGradient(W * 0.32, H * 0.28, 20, W * 0.5, H * 0.5, Math.hypot(W, H) * 0.62);
+  g.addColorStop(0, 'rgba(255,248,235,0.10)'); g.addColorStop(0.55, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.32)');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  // profundidade de campo: bordas desfocadas
+  const blur = mk(W, H); const bx = blur.getContext('2d'); bx.filter = `blur(${opts.dof ?? 7}px)`; bx.drawImage(c, 0, 0);
+  const m = mk(W, H); const mx = m.getContext('2d');
+  const rg = mx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.28, W / 2, H / 2, Math.hypot(W, H) * 0.55);
+  rg.addColorStop(0, 'rgba(0,0,0,0)'); rg.addColorStop(1, 'rgba(0,0,0,1)');
+  mx.fillStyle = rg; mx.fillRect(0, 0, W, H);
+  bx.filter = 'none'; bx.globalCompositeOperation = 'destination-in'; bx.drawImage(m, 0, 0);
+  x.drawImage(blur, 0, 0);
+  // grão de foto
+  const img = x.getImageData(0, 0, W, H); const d = img.data;
+  for (let i = 0; i < d.length; i += 4) { const n = (rand() - 0.5) * 10; d[i] += n; d[i+1] += n; d[i+2] += n; }
+  x.putImageData(img, 0, 0);
+}
+const text = (str, font, x, y, align = 'center') => (c) => { c.font = font; c.textAlign = align; c.textBaseline = 'alphabetic'; c.fillText(str, x, y); };
+
+
+/* ---------- Peças (todas fictícias) ---------- */
+const S = (fn) => fn; // marcador
+function seamRow(x, x0, y0, x1, y1, color, len = 9, gap = 6, width = 2.6) {
+  const c = hex(color); const L = Math.hypot(x1 - x0, y1 - y0); const ux = (x1 - x0) / L, uy = (y1 - y0) / L;
+  for (let t = 0; t < L; t += len + gap) {
+    x.save(); x.lineCap = 'round';
+    x.strokeStyle = 'rgba(0,0,0,0.35)'; x.lineWidth = width + 1.2; x.beginPath(); x.moveTo(x0 + ux * t + 1, y0 + uy * t + 1.5); x.lineTo(x0 + ux * (t + len) + 1, y0 + uy * (t + len) + 1.5); x.stroke();
+    x.strokeStyle = rgb(c, 1.0); x.lineWidth = width; x.beginPath(); x.moveTo(x0 + ux * t, y0 + uy * t); x.lineTo(x0 + ux * (t + len), y0 + uy * (t + len)); x.stroke();
+    x.strokeStyle = rgb(c, 1.35, 0.6); x.lineWidth = width * 0.35; x.beginPath(); x.moveTo(x0 + ux * t, y0 + uy * t - 0.6); x.lineTo(x0 + ux * (t + len), y0 + uy * (t + len) - 0.6); x.stroke();
+    x.restore();
+  }
+}
+let x; // contexto da peça atual (usado por seamRow)
+function wave(cx, x0, x1, y, amp, period) { cx.beginPath(); for (let px = x0; px <= x1; px += 4) { const py = y + Math.sin((px - x0) / period * Math.PI * 2) * amp; px === x0 ? cx.moveTo(px, py) : cx.lineTo(px, py); } cx.stroke(); }
+
+async function main() {
+  await document.fonts.load("600 100px Fraunces"); await document.fonts.load("italic 500 100px Fraunces");
+  await document.fonts.load("800 100px Manrope"); await document.fonts.load("700 100px Manrope"); await document.fonts.load("100px 'Great Vibes'");
+  window.fontsOk = [document.fonts.check("italic 500 100px Fraunces"), document.fonts.check("800 100px Manrope"), document.fonts.check("100px 'Great Vibes'")];
+  const out = {};
+
+  /* 1. Uniforme corporativo: polo piquê azul-marinho, marca fictícia "Maré Alta" */
+  { const W = 1600, H = 1200; const c = fabric(W, H, 'pique', '#1d2d4a', 2); x = c.getContext('2d');
+    const waves = stitchLayer(W, H, (m) => { m.lineWidth = 20; for (let i = 0; i < 3; i++) wave(m, W/2 - 130, W/2 + 130, H/2 - 150 + i * 40, 12, 90); }, '#e2795c', { angle: 1.2, spacing: 5.2 });
+    const name = stitchLayer(W, H, (m) => { m.letterSpacing = '8px'; text('MARÉ ALTA', "800 118px Manrope", W/2, H/2 + 60)(m); }, '#f1ece2', { angle: -1.15, spacing: 5.4 });
+    const sub = stitchLayer(W, H, (m) => { m.letterSpacing = '20px'; text('PESCADOS', "800 44px Manrope", W/2 + 9, H/2 + 140)(m); }, '#d9c29f', { angle: -1.0, spacing: 4.2 });
+    embroider(x, W, H, [waves, name, sub], 1.3); finish(c, { dof: 7 }); out['trabalho-uniforme'] = c.toDataURL('image/png'); }
+
+  /* 2. Camiseta: malha mescla, emblema fictício "Praia Brava" */
+  { const W = 1200, H = 1500; const c = fabric(W, H, 'jersey', '#b8bcc0', 2); x = c.getContext('2d');
+    const img = x.getImageData(0, 0, W, H); const d = img.data; for (let i = 0; i < d.length; i += 4) if (rand() < 0.08) { const k = rand() < 0.5 ? -26 : 22; d[i] += k; d[i+1] += k; d[i+2] += k; } x.putImageData(img, 0, 0);
+    const cx = W/2, cy = H/2 - 90;
+    const sun = stitchLayer(W, H, (m) => { m.beginPath(); m.arc(cx, cy + 40, 150, Math.PI, 0); m.closePath(); m.fill(); }, '#e3a63c', { angle: 0.35, spacing: 5.2, len: 26 });
+    const sea = stitchLayer(W, H, (m) => { m.lineWidth = 22; for (let i = 0; i < 3; i++) wave(m, cx - 205, cx + 205, cy + 85 + i * 48, 12, 105); }, '#2e7e86', { angle: 1.25, spacing: 5.0 });
+    const ring = stitchLayer(W, H, (m) => { m.lineWidth = 24; m.beginPath(); m.arc(cx, cy + 60, 265, 0, 7); m.stroke(); }, '#233149', { spacing: 4.8, radial: [cx, cy + 60, 240, 290] });
+    const name = stitchLayer(W, H, (m) => { m.letterSpacing = '9px'; text('PRAIA BRAVA', "800 92px Manrope", cx, cy + 445)(m); }, '#233149', { angle: -1.1, spacing: 5.0 });
+    embroider(x, W, H, [sun, sea, ring, name], 1.3); finish(c, { dof: 7 }); out['trabalho-camiseta'] = c.toDataURL('image/png'); }
+
+  /* 3. Boné: sarja cáqui, costura central, marca fictícia "Restinga Café" */
+  { const W = 1200, H = 1500; const c = fabric(W, H, 'twill', '#c7b089', 3); x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, W, 0); g.addColorStop(0, 'rgba(0,0,0,0.32)'); g.addColorStop(0.5, 'rgba(255,255,255,0.06)'); g.addColorStop(1, 'rgba(0,0,0,0.32)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.save(); x.filter = 'blur(3px)'; x.strokeStyle = 'rgba(40,30,15,0.45)'; x.lineWidth = 7; x.beginPath(); x.moveTo(W/2, 0); x.lineTo(W/2, H); x.stroke(); x.restore();
+    seamRow(x, W/2 - 22, 0, W/2 - 22, H, '#b39a70'); seamRow(x, W/2 + 22, 0, W/2 + 22, H, '#b39a70');
+    const cx = W/2, cy = H/2 - 60;
+    const cup = stitchLayer(W, H, (m) => { m.beginPath(); m.moveTo(cx - 110, cy - 150); m.lineTo(cx + 110, cy - 150); m.lineTo(cx + 85, cy - 15); m.quadraticCurveTo(cx, cy + 15, cx - 85, cy - 15); m.closePath(); m.fill(); m.lineWidth = 22; m.beginPath(); m.arc(cx + 118, cy - 100, 36, -1.4, 1.5); m.stroke(); }, '#1f2d45', { angle: 0.5, spacing: 5.2, len: 30 });
+    const steam = stitchLayer(W, H, (m) => { m.lineWidth = 15; for (const dx of [-40, 20]) { m.beginPath(); m.moveTo(cx + dx, cy - 185); m.bezierCurveTo(cx + dx - 25, cy - 215, cx + dx + 25, cy - 240, cx + dx, cy - 275); m.stroke(); } }, '#d8694f', { angle: 0, spacing: 4.4 });
+    const name = stitchLayer(W, H, (m) => { m.letterSpacing = '4px'; text('Restinga', "600 170px Fraunces", cx, cy + 190)(m); }, '#1f2d45', { angle: -1.1, spacing: 5.6 });
+    const sub = stitchLayer(W, H, (m) => { m.letterSpacing = '26px'; text('CAFÉ', "800 56px Manrope", cx + 13, cy + 290)(m); }, '#d8694f', { angle: -1.0, spacing: 4.4 });
+    embroider(x, W, H, [cup, steam, name, sub], 1.8); finish(c, { dof: 8 }); out['trabalho-bone'] = c.toDataURL('image/png'); }
+
+  /* 4. Jaleco: gabardine branca, nome fictício */
+  { const W = 1600, H = 1200; const c = fabric(W, H, 'gabardine', '#efeee9', 3); x = c.getContext('2d');
+    x.save(); x.filter = 'blur(5px)'; x.fillStyle = 'rgba(0,0,0,0.10)'; x.fillRect(0, H * 0.74, W, 18); x.restore();
+    seamRow(x, 0, H * 0.74 + 26, W, H * 0.74 + 26, '#d9d7d0', 10, 5, 2.4); seamRow(x, 0, H * 0.74 + 44, W, H * 0.74 + 44, '#d9d7d0', 10, 5, 2.4);
+    const name = stitchLayer(W, H, text('Dra. Helena Prado', "106px 'Great Vibes'", W/2, H/2 + 20), '#1e3456', { angle: -0.95, spacing: 4.6 });
+    const role = stitchLayer(W, H, (m) => { m.letterSpacing = '22px'; text('ODONTOLOGIA', "800 34px Manrope", W/2 + 10, H/2 + 92)(m); }, '#2b7a7c', { angle: -1.0, spacing: 4.0 });
+    embroider(x, W, H, [name, role], 1.2); finish(c, { dof: 7 }); out['trabalho-jaleco'] = c.toDataURL('image/png'); }
+
+  /* 5. Toalha: felpo creme com barra tecida, monograma fictício */
+  { const W = 1600, H = 1200; const c = fabric(W, H, 'terry', '#eee3d1', 3); x = c.getContext('2d');
+    const by = H * 0.76, bh = 130;
+    const bandC = fabric(W, bh, 'twill', '#c3cfc0', 2);
+    const bctx = bandC.getContext('2d');
+    for (let xx = 0; xx < W; xx += 5) { bctx.fillStyle = (xx / 5) % 2 < 1 ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)'; bctx.fillRect(xx, 0, 2, bh); }
+    x.save(); x.filter = 'blur(5px)'; x.fillStyle = 'rgba(60,50,35,0.18)'; x.fillRect(0, by - 4, W, bh + 8); x.restore();
+    x.drawImage(bandC, 0, by);
+    const b2 = hex('#eee3d1');
+    for (let n = 0; n < W / 2.2; n++) for (const edge of [by, by + bh]) {
+      const px = rand() * W, py = edge + (rand() - 0.5) * 9, r = 1.1 + rand() * 1.4;
+      x.fillStyle = rgb(b2, 0.8, 0.4); x.beginPath(); x.arc(px + 0.8, py + 1, r, 0, 7); x.fill();
+      x.fillStyle = rgb(b2, 1.03, 0.9); x.beginPath(); x.arc(px, py, r * 0.85, 0, 7); x.fill();
+    }
+    const a = stitchLayer(W, H, (m) => { text('A', "italic 500 300px Fraunces", W/2 - 200, H/2 + 70)(m); text('L', "italic 500 300px Fraunces", W/2 + 205, H/2 + 70)(m); }, '#6c8c75', { angle: -1.05, spacing: 5.2 });
+    const amp = stitchLayer(W, H, text('&', "600 200px Fraunces", W/2, H/2 + 50), '#c97b6d', { angle: 0.9, spacing: 4.8 });
+    embroider(x, W, H, [a, amp], 1.5); finish(c, { dof: 8 }); out['trabalho-toalha'] = c.toDataURL('image/png'); }
+
+  /* 6. Identidade de marca: patch redondo em jeans, marca fictícia "Farol Norte" */
+  { const W = 1200, H = 1500; const c = fabric(W, H, 'denim', '#27466b', 3); x = c.getContext('2d');
+    const cx = W/2, cy = H/2 - 40, R = 300;
+    const base = stitchLayer(W, H, (m) => { m.beginPath(); m.arc(cx, cy, R, 0, 7); m.fill(); }, '#eadfc8', { angle: 0.3, spacing: 5.0, len: 30 });
+    const tower = stitchLayer(W, H, (m) => { m.beginPath(); m.moveTo(cx - 55, cy + 150); m.lineTo(cx + 55, cy + 150); m.lineTo(cx + 34, cy - 95); m.lineTo(cx - 34, cy - 95); m.closePath(); m.fill(); }, '#d8694f', { angle: 1.4, spacing: 5.0 });
+    const stripes = stitchLayer(W, H, (m) => { for (const t of [0.22, 0.58]) { const y0 = cy + 150 - t * 245; const w0 = 55 - t * 21; m.beginPath(); m.moveTo(cx - w0, y0); m.lineTo(cx + w0, y0); m.lineTo(cx + w0 - 4, y0 - 42); m.lineTo(cx - w0 + 4, y0 - 42); m.closePath(); m.fill(); } }, '#f5f0e6', { angle: 1.4, spacing: 4.8 });
+    const top = stitchLayer(W, H, (m) => { m.fillRect(cx - 44, cy - 135, 88, 40); m.beginPath(); m.moveTo(cx - 52, cy - 135); m.lineTo(cx, cy - 178); m.lineTo(cx + 52, cy - 135); m.closePath(); m.fill(); }, '#1d2d47', { angle: 0.2, spacing: 4.6 });
+    const rays = stitchLayer(W, H, (m) => { m.lineWidth = 13; for (const [dx, dy] of [[-150, -40], [-150, 0], [150, -40], [150, 0]]) { m.beginPath(); m.moveTo(cx + dx * 0.45, cy - 118 + dy * 0.2); m.lineTo(cx + dx, cy - 118 + dy); m.stroke(); } }, '#f0bd4a', { angle: 0, spacing: 4.2 });
+    const sea = stitchLayer(W, H, (m) => { m.lineWidth = 15; wave(m, cx - 190, cx + 190, cy + 175, 9, 95); }, '#1d2d47', { angle: 1.2, spacing: 4.4 });
+    const ring = stitchLayer(W, H, (m) => { m.lineWidth = 40; m.beginPath(); m.arc(cx, cy, R - 4, 0, 7); m.stroke(); }, '#1d2d47', { spacing: 5.0, radial: [cx, cy, R - 30, R + 22] });
+    const name = stitchLayer(W, H, (m) => { m.letterSpacing = '14px'; text('FAROL NORTE', "800 60px Manrope", cx + 7, cy + 410)(m); }, '#efe6d2', { angle: -1.1, spacing: 4.6 });
+    embroider(x, W, H, [base, ring], 2.2); embroider(x, W, H, [tower, stripes, top, rays, sea], 1.0); embroider(x, W, H, [name], 1.2);
+    finish(c, { dof: 8 }); out['trabalho-identidade'] = c.toDataURL('image/png'); }
+
+  const probe = mk(10, 10).getContext('2d');
+  probe.font = "800 118px Manrope"; probe.letterSpacing = '8px'; const w1 = probe.measureText('MARÉ ALTA').width;
+  probe.font = "106px 'Great Vibes'"; probe.letterSpacing = '0px'; const w2 = probe.measureText('Dra. Helena Prado').width;
+  probe.font = "italic 500 300px Fraunces"; const w3 = 410 + probe.measureText('L').width;
+  console.log('larguras', Math.round(w1), Math.round(w2), Math.round(w3), 'limite seguro ~800');
+  window.results = out;
+}
+main().catch(e => { window.error = String(e && e.stack || e); });
+</script>
+</body></html>

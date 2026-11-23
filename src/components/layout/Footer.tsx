@@ -174,9 +174,17 @@ export function Footer() {
 
           {/* rodapé do rodapé */}
           <div className="mt-14 flex flex-col gap-4 border-t border-dashed border-linho/20 pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-[0.83rem] text-linho/50">
-              © {ano} {siteConfig.name}. {content.footer.rights}
-            </p>
+            <div className="max-w-2xl space-y-2 text-[0.83rem] text-linho/50">
+              <p>
+                © {ano} {siteConfig.name}. {content.footer.rights}
+              </p>
+              <p>{content.footer.concept}</p>
+              <p>
+                <a href="https://saymonthedev.com" className="underline decoration-dashed underline-offset-4 transition-colors hover:text-linho">
+                  {content.footer.madeBy}
+                </a>
+              </p>
+            </div>
             <a
               href="#inicio"
               className="group inline-flex items-center gap-2 self-start text-[0.83rem] text-linho/55 transition-colors hover:text-linho sm:self-auto"

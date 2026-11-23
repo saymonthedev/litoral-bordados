@@ -38,12 +38,11 @@ export function Hero() {
           <div className="relative mx-auto aspect-[1/1.04] w-full max-w-[24rem] sm:max-w-[27rem] lg:mr-0 lg:ml-auto lg:max-w-[33rem]">
             <div data-parallax="34" className="absolute top-0 right-0 h-[70%] w-[60%]">
               <PhotoFrame
-                src="/images/hero-placeholder.svg"
-                alt="Espaço reservado para uma foto dos bordados da Litoral Bordados"
+                src="/images/hero-linhas.webp"
+                alt="Carretéis de linha coloridos numa cesta azul de ateliê"
                 aspect="h-full"
                 sizes="(max-width: 1023px) 56vw, 21vw"
                 priority
-                badge={content.portfolio.placeholderBadge}
                 className="h-full"
                 rounded="rounded-[24px]"
               />

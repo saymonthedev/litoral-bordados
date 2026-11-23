@@ -57,7 +57,9 @@ export const metadata: Metadata = {
     title: `${siteConfig.name} | Bordados personalizados`,
     description: siteConfig.description,
   },
-  robots: { index: true, follow: true },
+  // Projeto conceitual: a empresa é fictícia, então o site fica fora da busca
+  // para não confundir quem procura bordados de verdade.
+  robots: { index: false, follow: true },
   // Os ícones são detectados automaticamente pelo Next.js a partir de
   // src/app/icon.svg e src/app/apple-icon.png (cópias de /public/brand).
 };

@@ -219,7 +219,7 @@ Antes:
   title: "Uniforme corporativo",
   category: "Uniformes",
   description: "Logotipo bordado em peças de uniforme...",
-  image: "/portfolio/espaco-01.svg",
+  image: "/portfolio/trabalho-uniforme.webp",
   alt: "Espaço reservado para foto de uniforme bordado",
   placeholder: true,
 },
@@ -241,11 +241,11 @@ Depois:
 
 ### 2. Foto do Hero (topo da página)
 
-Coloque a foto em `public/images/` e troque o caminho em `src/components/sections/Hero.tsx`, na linha `src="/images/hero-placeholder.svg"`. Remova também a propriedade `badge` para tirar a etiqueta de espaço reservado.
+Coloque a foto em `public/images/` e troque o caminho em `src/components/sections/Hero.tsx`, na linha `src="/images/hero-linhas.webp"`. Para mostrar a etiqueta de espaço reservado, use a propriedade `badge`.
 
 ### 3. Foto da seção Sobre
 
-Mesma coisa em `src/components/sections/About.tsx` (`src="/images/sobre-placeholder.svg"`).
+Mesma coisa em `src/components/sections/About.tsx` (`src="/images/sobre-atelie.webp"`).
 
 ### Formato recomendado das fotos
 

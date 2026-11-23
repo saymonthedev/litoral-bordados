@@ -3,9 +3,9 @@ import { testimonials } from "@/data/testimonials";
 /**
  * Depoimentos.
  *
- * A seção só existe quando houver depoimentos reais cadastrados em
- * src/data/testimonials.ts. Nada é inventado: com a lista vazia, este
- * componente não renderiza absolutamente nada.
+ * A seção só existe quando houver depoimentos cadastrados em
+ * src/data/testimonials.ts. Neste projeto conceitual eles são fictícios, e o
+ * aviso logo abaixo do título deixa isso claro para quem visita.
  */
 export function Testimonials() {
   if (testimonials.length === 0) return null;
@@ -20,6 +20,9 @@ export function Testimonials() {
         >
           Quem já bordou com a gente.
         </h2>
+        <p data-reveal className="mt-4 text-sm text-tinta-suave">
+          Depoimentos e empresas fictícios, criados para este projeto conceitual.
+        </p>
 
         <ul className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((depoimento, i) => (

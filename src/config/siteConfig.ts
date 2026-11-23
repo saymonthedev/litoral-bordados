@@ -7,7 +7,13 @@
  *
  * Campos vazios ("") são tratados como "ainda não informado":
  * o site simplesmente esconde o elemento correspondente — nenhum
- * link quebrado é gerado. Preencha somente o que existir de verdade.
+ * link quebrado é gerado.
+ *
+ * Projeto conceitual: a empresa e o endereço são fictícios. O WhatsApp é o do
+ * desenvolvedor (Saymon), com uma mensagem que deixa claro que a conversa é
+ * sobre o projeto — assim nenhum visitante cai no número de um desconhecido.
+ * Telefone, e-mail e Instagram ficam vazios de propósito: um perfil ou e-mail
+ * inventado poderia pertencer a outra pessoa.
  */
 
 export const siteConfig = {
@@ -31,10 +37,10 @@ export const siteConfig = {
    * Enquanto estiver vazio, o botão de orçamento leva para a seção
    * de contato em vez de gerar um link quebrado.
    */
-  whatsapp: "",
+  whatsapp: "5547999171788",
   /** Mensagem que já vai escrita na conversa do WhatsApp. */
   whatsappMessage:
-    "Olá! Conheci a Litoral Bordados pelo site e gostaria de solicitar um orçamento.",
+    "Olá, Saymon! Vi o projeto conceitual da Litoral Bordados e quero conversar sobre um site para a minha empresa.",
 
   /** Telefone para exibição livre, ex.: "(00) 0000-0000". */
   phone: "",
@@ -43,9 +49,9 @@ export const siteConfig = {
   /** Instagram: pode ser "@perfil", "perfil" ou a URL completa. */
   instagram: "",
   /** Endereço completo em uma linha, ex.: "Rua Exemplo, 000 — Bairro, Cidade/UF". */
-  address: "",
+  address: "Rua da Maré, 140 — Litoral de Santa Catarina",
   /** Horário de atendimento, ex.: "Segunda a sexta, 8h às 18h". */
-  openingHours: "",
+  openingHours: "Segunda a sexta, das 8h às 18h",
 
   /* ----------------------------------------------------------------
    * MARCA — arquivos em /public/brand
